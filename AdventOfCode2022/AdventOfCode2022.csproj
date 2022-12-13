@@ -19,6 +19,13 @@
     <None Remove="Input\10.txt" />
     <None Remove="Input\11.txt" />
     <None Remove="Input\12.txt" />
+    <None Remove="Input\13.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="Input\13.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>
