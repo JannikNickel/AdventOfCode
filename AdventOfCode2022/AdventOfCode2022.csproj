@@ -20,6 +20,7 @@
     <None Remove="Input\11.txt" />
     <None Remove="Input\12.txt" />
     <None Remove="Input\13.txt" />
+    <None Remove="Input\14.txt" />
   </ItemGroup>
 
   <ItemGroup>
