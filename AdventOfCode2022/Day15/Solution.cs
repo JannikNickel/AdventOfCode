@@ -8,6 +8,8 @@ namespace AdventOfCode2022.Day15
 {
     public class Solution : SolutionBase
     {
+        private Vec2[] diamondDirs = new Vec2[] { new Vec2(1, -1), new Vec2(1, 1), new Vec2(-1, 1), new Vec2(-1, -1) };
+
         public Solution() : base(15, "Beacon Exclusion Zone")
         {
             
@@ -15,23 +17,19 @@ namespace AdventOfCode2022.Day15
 
         public override object? SolveFirst()
         {
-            (Vec2 sensor, Vec2 beacon)[] sensors = ParseSensorData(Input.Lines);
-            return CountFreeInRow(sensors, 2000000);
+            return CountedBlockedInRow(ParseSensorData(Input.Lines), 2000000);
         }
 
         public override object? SolveSecond()
         {
-            return null;
+            Vec2 pos = FindSignalSource(ParseSensorData(Input.Lines), 4000000);
+            return (ulong)pos.x * 4000000UL + (ulong)pos.y;
         }
 
-        private int CountFreeInRow((Vec2 sensor, Vec2 beacon)[] sensors, int row)
+        private int CountedBlockedInRow((Vec2 sensor, Vec2 beacon)[] sensors, int row)
         {
-            HashSet<int> blockRowPositions = new HashSet<int>(
-                sensors.Select(n => n.sensor).Where(n => n.y == row).Select(n => n.x)
-                .Concat(sensors.Select(n => n.beacon).Where(n => n.y == row).Select(n => n.x)));
-            Console.WriteLine(blockRowPositions.Count);
+            HashSet<int> blockedRowPositions = new HashSet<int>(sensors.Select(n => n.sensor).Where(n => n.y == row).Select(n => n.x).Concat(sensors.Select(n => n.beacon).Where(n => n.y == row).Select(n => n.x)));
             HashSet<int> blockedCells = new HashSet<int>();
-
             foreach((Vec2 sensor, Vec2 beacon) in sensors)
             {
                 int r = ManhattenDst(sensor, beacon);
@@ -41,7 +39,7 @@ namespace AdventOfCode2022.Day15
                     int w = r - rowDst;
                     for(int i = -w;i < w + 1;i++)
                     {
-                        if(blockRowPositions.Contains(sensor.x + i))
+                        if(blockedRowPositions.Contains(sensor.x + i))
                         {
                             continue;
                         }
@@ -50,6 +48,40 @@ namespace AdventOfCode2022.Day15
                 }
             }
             return blockedCells.Count();
+        }
+
+        private Vec2 FindSignalSource((Vec2 sensor, Vec2 beacon)[] sensors, int area)
+        {
+            foreach((Vec2 sensor, Vec2 beacon) in sensors)
+            {
+                foreach(Vec2 p in IterateSensor(sensor, ManhattenDst(sensor, beacon) + 1, area))
+                {
+                    if(sensors.Any(n => ManhattenDst(n.sensor, p) <= ManhattenDst(n.sensor, n.beacon)) == false)
+                    {
+                        return p;
+                    }
+                }
+            }
+            return default;
+        }
+
+        private IEnumerable<Vec2> IterateSensor(Vec2 sensor, int radius, int area)
+        {
+            Vec2 pos = sensor;
+            pos.x -= radius;
+            foreach(Vec2 dir in diamondDirs)
+            {
+                for(int i = 0;i < radius;i++)
+                {
+                    if(pos.x < 0 || pos.y < 0 || pos.x > area || pos.y > area)
+                    {
+                        continue;
+                    }
+                    yield return pos;
+                    pos.x += dir.x;
+                    pos.y += dir.y;
+                }
+            }
         }
 
         private int ManhattenDst(Vec2 from, Vec2 to)
