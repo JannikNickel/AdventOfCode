@@ -17,7 +17,7 @@ namespace AdventOfCode2022.Day15
 
         public override object? SolveFirst()
         {
-            return CountedBlockedInRow(ParseSensorData(Input.Lines), 2000000);
+            return CountBlockedInRow(ParseSensorData(Input.Lines), 2000000);
         }
 
         public override object? SolveSecond()
@@ -26,7 +26,7 @@ namespace AdventOfCode2022.Day15
             return (ulong)pos.x * 4000000UL + (ulong)pos.y;
         }
 
-        private int CountedBlockedInRow((Vec2 sensor, Vec2 beacon)[] sensors, int row)
+        private int CountBlockedInRow((Vec2 sensor, Vec2 beacon)[] sensors, int row)
         {
             HashSet<int> blockedRowPositions = new HashSet<int>(sensors.Select(n => n.sensor).Where(n => n.y == row).Select(n => n.x).Concat(sensors.Select(n => n.beacon).Where(n => n.y == row).Select(n => n.x)));
             HashSet<int> blockedCells = new HashSet<int>();
