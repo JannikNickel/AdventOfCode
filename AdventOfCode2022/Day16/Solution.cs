@@ -18,26 +18,27 @@ namespace AdventOfCode2022.Day16
         public override object? SolveFirst()
         {
             (Valve start, Valve[] valves) = ParseInput(Input.Lines);
-            return FindHighestPressure(start, valves.ToArray());
+            return FindHighestPressure(start, valves.ToArray(), 30);
         }
 
         public override object? SolveSecond()
         {
-            return null;
+            (Valve start, Valve[] valves) = ParseInput(Input.Lines);
+            return FindHighestPressureTogether(start, valves.ToArray(), 26);//2316
         }
 
-        private int FindHighestPressure(Valve start, Valve[] valves)
+        private int FindHighestPressure(Valve start, Valve[] valves, int time)
         {
             int max = 0;
             Stack<State> options = new Stack<State>();
             Dictionary<StateIdentifier, int> stateScoreMemory = new Dictionary<StateIdentifier, int>();
-            options.Push(new State(start, new BitMask(), 0, 0, 30));
+            options.Push(new State(start, new BitMask(), 0, 0, time));
             while(options.Count > 0)
             {
                 State state = options.Pop();
                 Valve v = state.current;
 
-                StateIdentifier sId = new StateIdentifier(state.timeLeft, v.Index);
+                StateIdentifier sId = new StateIdentifier(v.Index, state.timeLeft);
                 if(stateScoreMemory.TryGetValue(sId, out int released) && released >= state.released)
                 {
                     continue;
@@ -65,6 +66,67 @@ namespace AdventOfCode2022.Day16
             return max;
         }
 
+        private int FindHighestPressureTogether(Valve start, Valve[] valves, int time)
+        {
+            int max = 0;
+            Stack<StateV2> options = new Stack<StateV2>();
+            Dictionary<StateIdentifierV2, int> stateScoreMemory = new Dictionary<StateIdentifierV2, int>();
+            options.Push(new StateV2(start, start, new BitMask(), 0, 0, time));
+            while(options.Count > 0)
+            {
+                StateV2 state = options.Pop();
+                Valve v = state.current;
+                Valve e = state.elephant;
+
+                StateIdentifierV2 sId = new StateIdentifierV2(v.Index, e.Index, state.timeLeft);
+                if(stateScoreMemory.TryGetValue(sId, out int released) && released >= state.released)
+                {
+                    continue;
+                }
+                stateScoreMemory[sId] = state.released;
+                max = Math.Max(max, state.released);
+
+                if(state.timeLeft <= 1)
+                {
+                    continue;
+                }
+
+                if(v.FlowRate > 0 && state.used[v.Index] == false)
+                {
+                    BitMask used = state.used;
+                    used[v.Index] = true;
+
+                    AddElephantValveOpenIfPossible(options, v, e, state, used, v.FlowRate + e.FlowRate);
+                    AddElephantMoves(options, v, e, state, used, v.FlowRate);
+                }
+                foreach(Valve vTunnel in v.Tunnels)
+                {
+                    AddElephantValveOpenIfPossible(options, vTunnel, e, state, state.used, e.FlowRate);
+                    AddElephantMoves(options, vTunnel, e, state, state.used, 0);
+                }
+            }
+            return max;
+        }
+
+        private void AddElephantValveOpenIfPossible(Stack<StateV2> options, Valve v, Valve e, StateV2 state, BitMask used, int pressureIncrease)
+        {
+            if(e.FlowRate > 0 && used[e.Index] == false)
+            {
+                used[e.Index] = true;
+                int p = state.pressure + pressureIncrease;
+                options.Push(new StateV2(v, e, used, state.released + p, p, state.timeLeft - 1));
+            }
+        }
+
+        private void AddElephantMoves(Stack<StateV2> options, Valve v, Valve e, StateV2 state, BitMask used, int pressureIncrease)
+        {
+            foreach(Valve eTunnel in e.Tunnels)
+            {
+                int p = state.pressure + pressureIncrease;
+                options.Push(new StateV2(v, eTunnel, used, state.released + p, p, state.timeLeft - 1));
+            }
+        }
+
         private (Valve root, Valve[] valves) ParseInput(string[] lines)
         {
             Valve[] valves = lines.Select((line, index) => new Valve(Regex.Match(line, @"[A-Z][A-Z]").Value, int.Parse(Regex.Match(line, @"\d+").Value), index)).ToArray();
@@ -77,6 +139,8 @@ namespace AdventOfCode2022.Day16
 
         private readonly record struct State(Valve current, BitMask used, int released, int pressure, int timeLeft);
         private readonly record struct StateIdentifier(int valveIndex, int time);
+        private readonly record struct StateV2(Valve current, Valve elephant, BitMask used, int released, int pressure, int timeLeft);
+        private readonly record struct StateIdentifierV2(int valveIndex, int elefantIndex, int time);
 
         public struct BitMask
         {
