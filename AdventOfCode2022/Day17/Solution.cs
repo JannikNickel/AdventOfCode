@@ -25,16 +25,14 @@ namespace AdventOfCode2022.Day17
         {
             int[] dirs = ParseDirections(base.Input.Raw);
             ExpandingGrid grid = new ExpandingGrid(7, dirs, false);
-            for(int i = 0;i < 2022;i++)
-            {
-                grid.SimulateShape(shapes[i % shapes.Length]);
-            }
-            return grid.Highest;
+            return grid.SimulateShapes(shapes, 2022);
         }
 
         public override object? SolveSecond()
         {
-            return null;
+            int[] dirs = ParseDirections(base.Input.Raw);
+            ExpandingGrid grid = new ExpandingGrid(7, dirs, false);
+            return grid.SimulateShapes(shapes, 1000000000000);
         }
 
         private int[] ParseDirections(string input)
@@ -46,24 +44,23 @@ namespace AdventOfCode2022.Day17
 
         private class Shape
         {
-            private byte[][] grid;
+            private byte[,] grid;
 
             public int Width { get; init; }
             public int Height { get; init; }
-            public byte this[int x, int y] => grid[y][x];
+            public byte this[int x, int y] => grid[y, x];
 
             public Shape(string shape)
             {
                 string[] lines = shape.Split("\n", StringSplitOptions.RemoveEmptyEntries);
                 Width = lines[0].Length;
                 Height = lines.Length;
-                grid = new byte[Height][];
+                grid = new byte[Height, Width];
                 for(int y = 0;y < Height;y++)
                 {
-                    grid[y] = new byte[Width];
                     for(int x = 0;x < Width;x++)
                     {
-                        grid[y][x] = (byte)(lines[Height - 1 - y][x] == '#' ? 1 : 0);
+                        grid[y, x] = (byte)(lines[Height - 1 - y][x] == '#' ? 1 : 0);
                     }
                 }
             }
@@ -98,6 +95,58 @@ namespace AdventOfCode2022.Day17
                 this.width = width;
                 this.dirs = dirs;
                 this.debug = debug;
+            }
+
+            private string GenSearchKey(int topAmount, int shapeIndex, int dirStep)
+            {
+                string key = "";
+                int k = 0;
+                int kIndex = rows.Count - 1;
+                while(k < topAmount)
+                {
+                    if(rows[kIndex].IsEmpty == false)
+                    {
+                        key += $"{(byte)(int)rows[kIndex + 1]}_";
+                        k++;
+                    }
+                    kIndex--;
+                }
+                return key + $"[{shapeIndex}]_[{dirStep % dirs.Length}]";
+            }
+
+            public long SimulateShapes(Shape[] shapes, long amount)
+            {
+                const int topAmount = 50;
+                Dictionary<string, (long iteration, long highest)> seen = new Dictionary<string, (long iteration, long highest)>();
+                int shapeIndex = 0;
+                long simulatedHeight = 0;
+                for(long i = 0;i < amount;i++)
+                {
+                    Shape shape = shapes[shapeIndex];
+                    SimulateShape(shape);
+                    shapeIndex = (shapeIndex + 1) % shapes.Length;
+
+                    if(amount > 2022)
+                    {
+                        if(simulatedHeight == 0 && i >= topAmount)
+                        {
+                            string key = GenSearchKey(topAmount, shapeIndex, dirStep);
+                            if(seen.TryGetValue(key, out (long iteration, long highest) cycle))
+                            {
+                                long cycleShapeAmount = i - cycle.iteration;
+                                long cycleHeight = Highest - cycle.highest;
+                                long sim = (long)Math.Floor((amount - i) / (double)cycleShapeAmount) - 1;
+                                simulatedHeight += sim * cycleHeight;
+                                i += sim * cycleShapeAmount;
+                            }
+                            else
+                            {
+                                seen[key] = (i, Highest);
+                            }
+                        }
+                    }
+                }
+                return Highest + simulatedHeight;
             }
 
             public void SimulateShape(Shape shape)
@@ -230,6 +279,11 @@ namespace AdventOfCode2022.Day17
                         data &= ~(1 << index);
                     }
                 }
+            }
+
+            public static implicit operator int(BitMask mask)
+            {
+                return mask.data;
             }
         }
     }
