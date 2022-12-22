@@ -6,134 +6,43 @@ namespace AdventOfCode2022.Day22
 {
     public class Solution : SolutionBase
     {
-        private static (int xfrom, int xTo, int yFrom, int yTo, Vec2 dir)[] zones = new (int xfrom, int xTo, int yFrom, int yTo, Vec2 dir)[]
-        {
-            (xfrom: 0, xTo: 49, yFrom: 200, yTo: 200, new Vec2(0, 1)),
-            (xfrom: -1, xTo: -1, yFrom: 150, yTo: 199, new Vec2(-1, 0)),
-            (xfrom: 50, xTo: 50, yFrom: 150, yTo: 199, new Vec2(1, 0)),
-
-            (xfrom: -1, xTo: -1, yFrom: 100, yTo: 149, new Vec2(-1, 0)),
-            (xfrom: 0, xTo: 49, yFrom: 99, yTo: 99, new Vec2(0, -1)),
-
-            (xfrom: 50, xTo: 99, yFrom: 150, yTo: 150, new Vec2(0, 1)),
-            (xfrom: 100, xTo: 100, yFrom: 100, yTo: 149, new Vec2(1, 0)),
-
-            (xfrom: 49, xTo: 49, yFrom: 50, yTo: 99, new Vec2(-1, 0)),
-            (xfrom: 100, xTo: 100, yFrom: 50, yTo: 99, new Vec2(1, 0)),
-
-            (xfrom: 49, xTo: 49, yFrom: 0, yTo: 49, new Vec2(-1, 0)),
-            (xfrom: 50, xTo: 99, yFrom: -1, yTo: -1, new Vec2(0, -1)),
-
-            (xfrom: 100, xTo: 149, yFrom: -1, yTo: -1, new Vec2(0, -1)),
-            (xfrom: 150, xTo: 150, yFrom: 0, yTo: 49, new Vec2(1, 0)),
-            (xfrom: 100, xTo: 194, yFrom: 50, yTo: 50, new Vec2(0, 1)),
-        };
-
-        private static (int from, int to, Func<Vec2, Vec2> transform)[] transforms = new (int from, int to, Func<Vec2, Vec2> transform)[]
-        {
-            (1, 12, (Vec2 v) => new Vec2(v.x + 100, -200)),
-            (2, 11, (Vec2 v) => new Vec2(v.y - 100, 0)),
-            (3, 6, (Vec2 v) => v + new Vec2(v.y - 100, 149)),
-            (4, 10, (Vec2 v) => v + new Vec2(50, 49 - (v.y - 100))),
-            (5, 8, (Vec2 v) => v + new Vec2(50, v.x + 50)),
-            (7, 13, (Vec2 v) => v + new Vec2(149, 49 - (100 - v.y))),
-            (9, 14, (Vec2 v) => v + new Vec2(v.y - 50 + 100, 49)),
-        };
-
         public Solution() : base(22, "Monkey Map")
         {
-
+            
         }
 
         public override object? SolveFirst()
         {
-            char[,] map = ParseMap(Input.Raw, out List<Step> path, out Vec2 startPos);
-            Vec2 playerPos = startPos;
+            Map map = new Map(ParseMap(Input.Raw, out List<Step> path, out Vec2 pos));
             Vec2 dir = new Vec2(1, 0);
-            int stepIndex = 0;
-            do
+            for(int i = 0;i < path.Count;i++)
             {
-                Step step = path[stepIndex];
-                if(step.rotation != (char)0)
-                {
-                    dir = step.rotation == 'L' ? new Vec2(dir.y, -dir.x) : new Vec2(-dir.y, dir.x);
-                }
-                else
-                {
-                    for(int i = 0;i < step.forward;i++)
-                    {
-                        Vec2 np = new Vec2(playerPos.x + dir.x, playerPos.y + dir.y);
-                        NormalizePos(ref np, map);
-                        if(map[np.y, np.x] == ' ')
-                        {
-                            np = WrapAround(map, np, dir);
-                        }
-                        if(map[np.y, np.x] == '#')
-                        {
-                            break;
-                        }
-                        playerPos = np;
-                        DrawMap(map, playerPos);
-                    }
-                }
-                stepIndex++;
-            } while(stepIndex < path.Count);
-
-            int row = playerPos.y + 1;
-            int column = playerPos.x + 1;
-            int facing = dir == new Vec2(1, 0) ? 0 : (dir == new Vec2(0, 1) ? 1 : (dir == new Vec2(0, -1) ? 2 : 3));
-            return 1000 * row + 4 * column + facing;
-        }
-
-        private void NormalizePos(ref Vec2 pos, char[,] map)
-        {
-            if(pos.x < 0)
-            {
-                pos.x = map.GetLength(1) - 1;
+                map.HandleStep(path[i], ref pos, ref dir);
             }
-            if(pos.y < 0)
-            {
-                pos.y = map.GetLength(0) - 1;
-            }
-            pos.x %= map.GetLength(1);
-            pos.y %= map.GetLength(0);
-        }
-
-        private Vec2 WrapAround(char[,] map, Vec2 np, Vec2 dir)
-        {
-            while(map[np.y, np.x] == ' ')
-            {
-                np += dir;
-                NormalizePos(ref np, map);
-            }
-            return np;
+            return CalcScore(pos, dir);
         }
 
         public override object? SolveSecond()
         {
-            return null;
+            CubeMap map = new CubeMap(ParseMap(Input.Raw, out List<Step> path, out Vec2 pos));
+            Vec2 dir = new Vec2(1, 0);
+            for(int i = 0;i < path.Count;i++)
+            {
+                map.HandleStep(path[i], ref pos, ref dir);
+            }
+            return CalcScore(pos, dir);
         }
 
-        private void DrawMap(char[,] map, Vec2 player)
+        private int CalcScore(Vec2 player, Vec2 dir)
         {
-            return;
-            for(int i = 0;i < map.GetLength(0);i++)
-            {
-                for(int k = 0;k < map.GetLength(1);k++)
-                {
-                    Console.Write(i == player.y && k == player.x ? 'X' : map[i, k]);
-                }
-                Console.WriteLine();
-            }
-            Console.WriteLine();
-            System.Threading.Thread.Sleep(1000);
+            int facing = dir == new Vec2(1, 0) ? 0 : (dir == new Vec2(0, -1) ? 1 : (dir == new Vec2(-1, 0) ? 2 : 3));
+            return 1000 * (player.y + 1) + 4 * (player.x + 1) + facing;
         }
 
         private char[,] ParseMap(string input, out List<Step> path, out Vec2 startPos)
         {
             string[] parts = input.Split(new string[] { "\r\n\r\n", "\n\n" }, StringSplitOptions.RemoveEmptyEntries);
             string[] mapInput = parts[0].Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
-            string pathInput = parts[1];
             char[,] map = new char[mapInput.Length, mapInput.Max(n => n.Length)];
             startPos = new Vec2(mapInput[0].IndexOf('.'), 0);
             for(int i = 0;i < map.GetLength(0);i++)
@@ -144,6 +53,7 @@ namespace AdventOfCode2022.Day22
                 }
             }
 
+            string pathInput = parts[1];
             path = new List<Step>();
             int index = 0;
             while(index < pathInput.Length)
@@ -163,20 +73,127 @@ namespace AdventOfCode2022.Day22
         }
 
         private readonly record struct Step(int forward, char rotation = (char)0);
+
         private record struct Vec2(int x, int y)
         {
+            public static Vec2 Right => new Vec2(1, 0);
+            public static Vec2 Down => new Vec2(0, -1);
+            public static Vec2 Left => new Vec2(-1, 0);
+            public static Vec2 Up => new Vec2(0, 1);
+
             public static Vec2 operator +(Vec2 lhs, Vec2 rhs) => new Vec2(lhs.x + rhs.x, lhs.y + rhs.y);
+            public static Vec2 operator -(Vec2 value) => new Vec2(-value.x, -value.y);
         }
 
-        private class CubeMap
+        private class Map
         {
-            private char[,] map;
+            protected char[,] map;
 
-            public CubeMap(char[,] map)
+            public Map(char[,] map)
             {
                 this.map = map;
             }
 
+            public void HandleStep(Step step, ref Vec2 pos, ref Vec2 dir)
+            {
+                if(step.rotation != (char)0)
+                {
+                    dir = step.rotation == 'L' ? new Vec2(dir.y, -dir.x) : new Vec2(-dir.y, dir.x);
+                    return;
+                }
+
+                for(int i = 0;i < step.forward;i++)
+                {
+                    Move(ref pos, ref dir);
+                }
+            }
+
+            protected virtual bool Move(ref Vec2 pos, ref Vec2 dir)
+            {
+                Vec2 np = pos + dir;
+                NormalizePos(ref np);
+                if(map[np.y, np.x] == ' ')
+                {
+                    np = WrapAround(map, np, dir);
+                }
+                if(map[np.y, np.x] == '#')
+                {
+                    return false;
+                }
+                pos = np;
+                return true;
+            }
+
+            private void NormalizePos(ref Vec2 pos)
+            {
+                pos.x = (pos.x + map.GetLength(1)) % map.GetLength(1);
+                pos.y = (pos.y + map.GetLength(0)) % map.GetLength(0);
+            }
+
+            private Vec2 WrapAround(char[,] map, Vec2 np, Vec2 dir)
+            {
+                while(map[np.y, np.x] == ' ')
+                {
+                    np += dir;
+                    NormalizePos(ref np);
+                }
+                return np;
+            }
+        }
+
+        private class CubeMap : Map
+        {
+            private Dictionary<(Vec2 from, Vec2 dir), (Vec2 target, Vec2 dir)> jumps;
+
+            public CubeMap(char[,] map) : base(map)
+            {
+                this.map = map;
+                this.jumps = new Dictionary<(Vec2 from, Vec2 dir), (Vec2 target, Vec2 dir)>();
+
+                Enumerable.Range(0, 50).ForEach(n => AddJump(new Vec2(50, 150 + n), new Vec2(50 + n, 150), Vec2.Left, Vec2.Down));
+                Enumerable.Range(0, 50).ForEach(n => AddJump(new Vec2(-1, 150 + n), new Vec2(50 + n, -1), Vec2.Right, Vec2.Up));
+                Enumerable.Range(0, 50).ForEach(n => AddJump(new Vec2(n, 200), new Vec2(n + 100, -1), Vec2.Down, Vec2.Up));
+                Enumerable.Range(0, 50).ForEach(n => AddJump(new Vec2(n, 99), new Vec2(49, 50 + n), Vec2.Up, Vec2.Right));
+                Enumerable.Range(0, 50).ForEach(n => AddJump(new Vec2(-1, 100 + n), new Vec2(49, 49 - n), Vec2.Right, Vec2.Right));
+                Enumerable.Range(0, 50).ForEach(n => AddJump(new Vec2(100, 100 + n), new Vec2(150, 49 - n), Vec2.Left, Vec2.Left));
+                Enumerable.Range(0, 50).ForEach(n => AddJump(new Vec2(100, 50 + n), new Vec2(100 + n, 50), Vec2.Left, Vec2.Down));
+            }
+
+            private void AddJump(Vec2 a, Vec2 b, Vec2 dirA, Vec2 dirB)
+            {
+                jumps.Add((a, -dirA), (b, dirB));
+                jumps.Add((b, -dirB), (a, dirA));
+            }
+
+            protected override bool Move(ref Vec2 pos, ref Vec2 dir)
+            {
+                Vec2 np = pos + dir;
+                Vec2 nd = dir;
+                if(jumps.TryGetValue((np, nd), out (Vec2 target, Vec2 targetDir) result))
+                {
+                    np = result.target;
+                    nd = result.targetDir;
+                    np += nd;
+                }
+                if(map[np.y, np.x] == '#')
+                {
+                    return false;
+                }
+                pos = np;
+                dir = nd;
+                return true;
+            }
+        }
+    }
+
+    internal static class EnumerableExtensions
+    {
+        internal static void ForEach<T>(this IEnumerable<T> source, Action<T> action)
+        {
+            foreach(T item in source)
+            {
+                action?.Invoke(item);
+            }
         }
     }
 }
