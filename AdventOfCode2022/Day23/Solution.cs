@@ -15,16 +15,10 @@ namespace AdventOfCode2022.Day23
             new Vec2[] { new Vec2(-1, 0), new Vec2(-1, 1), new Vec2(-1, -1) },
             new Vec2[] { new Vec2(1, 0), new Vec2(1, 1), new Vec2(1, -1) }
         };
+
         private static Vec2[] allDirs = new Vec2[]
         {
-            new Vec2(0, 1),
-            new Vec2(1, 1),
-            new Vec2(1, 0),
-            new Vec2(1, -1),
-            new Vec2(0, -1),
-            new Vec2(-1, -1),
-            new Vec2(-1, 0),
-            new Vec2(-1, 1)
+            new Vec2(0, 1), new Vec2(1, 1), new Vec2(1, 0), new Vec2(1, -1), new Vec2(0, -1), new Vec2(-1, -1), new Vec2(-1, 0), new Vec2(-1, 1)
         };
 
         public Solution() : base(23, "Unstable Diffusion")
@@ -141,7 +135,7 @@ namespace AdventOfCode2022.Day23
 
             public void CheckMove(Dictionary<Vec2, Elf> positions)
             {
-                CanMove = Position != proposed && !positions.Any(n => n.Value.proposed == proposed && n.Value != this);
+                CanMove = Position != proposed && !allDirs.Any(n => positions.TryGetValue(proposed + n, out Elf? elf) && elf != this && elf.proposed == proposed);
             }
 
             public void Move(Dictionary<Vec2, Elf> elves)
