@@ -32,7 +32,7 @@ namespace AdventOfCode2022
 
         public static IEnumerable<SolutionBase> Solutions()
         {
-            for(int i = 0;i < 25;i++)
+            for(int i = 0;i <= 25;i++)
             {
                 Type? t = Type.GetType($"AdventOfCode2022.Day{i:D2}.Solution");
                 if(t != null)
