@@ -12,32 +12,4 @@
     </Content>
   </ItemGroup>
 
-  <ItemGroup>
-    <None Remove="Input\05.txt" />
-    <None Remove="Input\08.txt" />
-    <None Remove="Input\09.txt" />
-    <None Remove="Input\10.txt" />
-    <None Remove="Input\11.txt" />
-    <None Remove="Input\12.txt" />
-    <None Remove="Input\13.txt" />
-    <None Remove="Input\14.txt" />
-    <None Remove="Input\15.txt" />
-    <None Remove="Input\16.txt" />
-    <None Remove="Input\17.txt" />
-    <None Remove="Input\18.txt" />
-    <None Remove="Input\19.txt" />
-    <None Remove="Input\20.txt" />
-    <None Remove="Input\21.txt" />
-    <None Remove="Input\22.txt" />
-    <None Remove="Input\23.txt" />
-    <None Remove="Input\24.txt" />
-    <None Remove="Input\25.txt" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Update="Input\13.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-
 </Project>
