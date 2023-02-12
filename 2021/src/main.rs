@@ -50,7 +50,7 @@ fn day_to_formatted(day: i32) -> String {
 fn run_solution(solution: &Box<dyn Solution>) {
     print_light(&format!("Preparing Solution {} - {}", day_to_formatted(solution.day()), solution.name()));
 
-    let s_path = format!("input/{}.txt", day_to_formatted(solution.day() - 1));
+    let s_path = format!("input/{}.txt", day_to_formatted(solution.day()));
     let path = Path::new(&s_path);
     let input = match Input::build(path) {
         Ok(result) => result,
@@ -77,7 +77,7 @@ fn run_part(part: i32, solution: &Box<dyn Solution>, input: &Input) {
         }
     };    
     let duration = start.elapsed();
-    print_light(&format!("Solved Part {} ({}ns)", part, duration.as_nanos()));
+    print_light(&format!("Solved Part {} ({}ms)", part, duration.as_nanos() as f64 / 1000000.0));
 
     print_light("Result:");
     print(&format!("{}", result.unwrap_or(Box::new("-"))));
