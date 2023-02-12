@@ -1,8 +1,10 @@
 mod day01;
 mod day02;
+mod day03;
 
 pub use day01::Day01;
 pub use day02::Day02;
+pub use day03::Day03;
 use crate::input::Input;
 
 pub trait Solution {
@@ -15,7 +17,8 @@ pub trait Solution {
 pub fn all_solutions() -> Vec<Box<dyn Solution>> {
     let v: Vec<Box<dyn Solution>> = vec![
         Box::new(Day01),
-        Box::new(Day02)
+        Box::new(Day02),
+        Box::new(Day03)
     ];
     v
 }
