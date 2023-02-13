@@ -45,17 +45,10 @@ fn find_rating(numbers: &Vec<String>, line_size: usize, op: Op) -> i32 {
     for i in 0..line_size {
         let set = count_set(open.iter().map(|n| numbers[*n].as_str()), i);
         let unset = open.len() - set;
-
-        let mut target = match op {
-            Op::Greater => '0',
-            Op::Less => '1'
+        let target = match op {
+            Op::Greater => if set >= unset { '1' } else { '0' },
+            Op::Less => if set >= unset { '0' } else { '1' }
         };
-        if set >= unset {
-            target = match op {
-                Op::Greater => '1',
-                Op::Less => '0'
-            }
-        }
 
         for k in (0..open.len()).rev() {
             let x = numbers[open[k]].chars().nth(i).unwrap();
