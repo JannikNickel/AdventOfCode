@@ -6,6 +6,7 @@ version = 3
 name = "aoc2021"
 version = "0.1.0"
 dependencies = [
+ "automod",
  "clap",
  "colored",
 ]
@@ -19,6 +20,17 @@ dependencies = [
  "hermit-abi 0.1.19",
  "libc",
  "winapi",
+]
+
+[[package]]
+name = "automod"
+version = "1.0.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "72c426e0c379613fb47e64539a570809a580b377c3971f676f62d16aaa5084f6"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
 ]
 
 [[package]]
