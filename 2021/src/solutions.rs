@@ -1,16 +1,5 @@
-mod day01;
-mod day02;
-mod day03;
-mod day04;
-mod day05;
-mod day06;
+automod::dir!("src/solutions/");
 
-pub use day01::Day01;
-pub use day02::Day02;
-pub use day03::Day03;
-pub use day04::Day04;
-pub use day05::Day05;
-pub use day06::Day06;
 use crate::input::Input;
 
 pub trait Solution {
@@ -22,12 +11,13 @@ pub trait Solution {
 
 pub fn all_solutions() -> Vec<Box<dyn Solution>> {
     let v: Vec<Box<dyn Solution>> = vec![
-        Box::new(Day01),
-        Box::new(Day02),
-        Box::new(Day03),
-        Box::new(Day04),
-        Box::new(Day05),
-        Box::new(Day06)
+        Box::new(day01::Day01),
+        Box::new(day02::Day02),
+        Box::new(day03::Day03),
+        Box::new(day04::Day04),
+        Box::new(day05::Day05),
+        Box::new(day06::Day06),
+        Box::new(day07::Day07)
     ];
     v
 }
