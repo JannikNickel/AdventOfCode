@@ -1,9 +1,8 @@
-use std::collections::HashSet;
-use std::ops::Deref;
-
 use super::Solution;
 use crate::input::Input;
 use crate::common::math::Vec2;
+use std::collections::HashSet;
+use std::ops::Deref;
 
 pub struct Day13;
 
