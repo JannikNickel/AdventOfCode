@@ -104,7 +104,7 @@ fn decode_packet(bin: &str, offset: &mut usize) -> Option<Packet> {
                     sub_packets.push(sub);
                 }
             } else {
-                for i in 0..l {
+                for _ in 0..l {
                     sub_packets.push(decode_packet(bin, offset).unwrap());
                 }
             }
