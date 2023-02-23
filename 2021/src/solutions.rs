@@ -31,6 +31,7 @@ pub fn all_solutions() -> Vec<Box<dyn Solution>> {
         Box::new(day18::Day18),
         Box::new(day19::Day19),
         Box::new(day20::Day20),
+        Box::new(day21::Day21)
     ];
     v
 }
