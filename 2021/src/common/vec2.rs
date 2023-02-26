@@ -1,4 +1,4 @@
-use std::ops::{Add, AddAssign, Sub, SubAssign, Mul, MulAssign, Div, DivAssign, Neg};
+use std::ops::{Add, AddAssign, Sub, SubAssign, Mul, MulAssign, Div, DivAssign, Neg, Index, IndexMut};
 use std::cmp::Eq;
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
@@ -14,6 +14,28 @@ impl Vec2 {
 
     pub fn length(&self) -> i32 {
         i32::abs(self.x) + i32::abs(self.y)
+    }
+}
+
+impl Index<usize> for Vec2 {
+    type Output = i32;
+
+    fn index(&self, index: usize) -> &Self::Output {
+        match index {
+            0 => &self.x,
+            1 => &self.y,
+            _ => panic!("Index out of range!")
+        }
+    }
+}
+
+impl IndexMut<usize> for Vec2 {
+    fn index_mut(&mut self, index: usize) -> &mut Self::Output {
+        match index {
+            0 => &mut self.x,
+            1 => &mut self.y,
+            _ => panic!("Index out of range!")
+        }
     }
 }
 
