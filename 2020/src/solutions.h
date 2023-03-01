@@ -3,6 +3,7 @@
 #include <type_traits>
 #include "input.h"
 #include "day01.h"
+#include "day02.h"
 
 class Solutions
 {
@@ -15,6 +16,7 @@ class Solutions
 	static constexpr std::unique_ptr<SolutionBase>(*DAYS[])(const Input&) =
 	{
 		CreateInstance<Day01>,
+		CreateInstance<Day02>
 	};
 
 public:

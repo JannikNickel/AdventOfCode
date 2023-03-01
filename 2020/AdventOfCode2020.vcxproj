@@ -13,9 +13,12 @@
   <ItemGroup>
     <ClCompile Include="src\adventofcode2020.cpp" />
     <ClCompile Include="src\day01.cpp" />
+    <ClCompile Include="src\day02.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\common\stringutils.h" />
     <ClInclude Include="src\day01.h" />
+    <ClInclude Include="src\day02.h" />
     <ClInclude Include="src\input.h" />
     <ClInclude Include="src\solutionbase.h" />
     <ClInclude Include="src\solutions.h" />
