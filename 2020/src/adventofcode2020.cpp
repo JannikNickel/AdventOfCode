@@ -59,8 +59,9 @@ int main(int argc, char* argv[])
 
 void Solve(int day)
 {
-	Input input = Input::FromFile(std::format("/input/{:02}.txt", day));
+	Input input = Input::FromFile(std::format("./input/{:02}.txt", day));
 	std::unique_ptr<SolutionBase> solution = Solutions::GetSolution(day, input);
+	PrintInfoLine(std::format("Preparing Solution {} - {}", solution->Day(), solution->Name()));
 	Solve(solution, 1);
 	Solve(solution, 2);
 }
