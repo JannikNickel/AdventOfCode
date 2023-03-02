@@ -5,6 +5,7 @@
 #include "day01.h"
 #include "day02.h"
 #include "day03.h"
+#include "day04.h"
 
 class Solutions
 {
@@ -18,7 +19,8 @@ class Solutions
 	{
 		CreateInstance<Day01>,
 		CreateInstance<Day02>,
-		CreateInstance<Day03>
+		CreateInstance<Day03>,
+		CreateInstance<Day04>
 	};
 
 public:
