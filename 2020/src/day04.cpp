@@ -71,20 +71,6 @@ std::string Day04::ExtractValue(const std::string& passport, const std::string& 
 
 std::vector<std::string> Day04::ParseInput() const
 {
-	std::vector<std::string> passports = {};
-	int start = 0;
 	std::string input = common::ReplaceStr(this->input.raw, "\r\n", "\n");
-	for(int i = 0; i < input.length(); i++)
-	{
-		if(input[i] == '\n' && (i + 1 >= input.length() || input[i + 1] == '\n'))
-		{
-			passports.push_back(input.substr(start, i - start));
-			start = i + 2;
-		}
-	}
-	if(start < input.length())
-	{
-		passports.push_back(input.substr(start, input.length() - start));
-	}
-	return passports;
+	return common::SplitStr(input, "\n\n");
 }
