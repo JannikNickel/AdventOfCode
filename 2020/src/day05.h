@@ -1,6 +1,5 @@
 #pragma once
 #include "solutionbase.h"
-#include <utility>
 
 struct Day05 : SolutionBase
 {

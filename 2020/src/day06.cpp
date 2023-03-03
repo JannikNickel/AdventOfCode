@@ -30,7 +30,7 @@ std::vector<std::string> Day06::ParseInput() const
 
 int Day06::CalcAnswerSum(const std::string& answer, bool all) const
 {
-	int questions[26] = { };
+	int questions[26] = {};
 	for(char c : answer)
 	{
 		if(c >= 'a' && c <= 'z')
