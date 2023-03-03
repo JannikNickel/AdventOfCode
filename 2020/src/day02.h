@@ -1,7 +1,6 @@
 #pragma once
 #include "solutionbase.h"
 #include <vector>
-#include <string>
 #include <utility>
 #include <functional>
 
