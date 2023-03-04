@@ -11,7 +11,7 @@ protected:
 	ResultBase* SolveSecond() const override;
 
 private:
-	enum InstType
+	enum class InstType
 	{
 		NOP, ACC, JMP
 	};
