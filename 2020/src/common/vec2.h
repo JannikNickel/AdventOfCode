@@ -34,5 +34,19 @@ namespace common
 			res += rhs;
 			return res;
 		}
+
+		Vec2<T>& operator *=(const T& rhs)
+		{
+			x *= rhs;
+			y *= rhs;
+			return *this;
+		}
+
+		friend Vec2<T> operator *(const Vec2<T>& lhs, const T& rhs)
+		{
+			Vec2<T> res = lhs;
+			res *= rhs;
+			return res;
+		}
 	};
 }
