@@ -26,6 +26,7 @@ int main(int argc, char* argv[])
 				{
 					throw std::out_of_range("");
 				}
+				solutionsToRun.push_back(day);
 			}
 			catch(const std::exception&)
 			{
