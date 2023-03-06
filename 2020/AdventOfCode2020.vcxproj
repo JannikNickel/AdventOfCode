@@ -29,6 +29,7 @@
     <ClCompile Include="src\day15.cpp" />
     <ClCompile Include="src\day16.cpp" />
     <ClCompile Include="src\day17.cpp" />
+    <ClCompile Include="src\day18.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\common\grid.h" />
@@ -51,6 +52,7 @@
     <ClInclude Include="src\day15.h" />
     <ClInclude Include="src\day16.h" />
     <ClInclude Include="src\day17.h" />
+    <ClInclude Include="src\day18.h" />
     <ClInclude Include="src\input.h" />
     <ClInclude Include="src\solutionbase.h" />
     <ClInclude Include="src\solutions.h" />

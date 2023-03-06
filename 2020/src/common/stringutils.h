@@ -25,7 +25,7 @@ namespace common
 	{
 		std::string res = source;
 		size_t pos = 0;
-		while((pos = source.find(search, pos)) != std::string::npos)
+		while((pos = res.find(search, pos)) != std::string::npos)
 		{
 			res.replace(pos, search.length(), replacement);
 			pos += replacement.length();
