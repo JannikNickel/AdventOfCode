@@ -6,4 +6,4 @@ Solutions for [Advent of Code](https://adventofcode.com/).
 |------|-------|----------|
 | [2022](/2022) | 50 ⭐  | C#       |
 | [2021](/2021) | 50 ⭐  | Rust     |
-| [2020](/2020) | In Progress | C++ |
+| [2020](/2020) | 50 ⭐  | C++      |
