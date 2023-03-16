@@ -20,13 +20,20 @@ vector vector_create(size_t element_size)
 vector* vector_new(size_t element_size)
 {
 	vector v = vector_create(element_size);
-	vector* v_ptr = (vector*)malloc(sizeof(vector));
+	vector* v_ptr = malloc(sizeof(vector));
 	memcpy(v_ptr, &v, sizeof(vector));
 	return v_ptr;
 }
 
-void vector_delete(vector* v)
+void vector_delete(vector* v, vector_element_dealloc dealloc)
 {
+	if(dealloc != NULL)
+	{
+		for(size_t i = 0; i < v->size; i++)
+		{
+			dealloc(vector_at(v, i));
+		}
+	}
 	free(v->data);
 	v->data = NULL;
 	v->size = 0;
@@ -48,8 +55,15 @@ void vector_set_capacity(vector* v, size_t capacity)
 	}
 }
 
-void vector_clear(vector* v)
+void vector_clear(vector* v, vector_element_dealloc dealloc)
 {
+	if(dealloc != NULL)
+	{
+		for(size_t i = 0; i < v->size; i++)
+		{
+			dealloc(vector_at(v, i));
+		}
+	}
 	v->size = 0;
 }
 
@@ -86,8 +100,12 @@ void vector_insert(vector* v, size_t index, void* element)
 	v->size++;
 }
 
-void vector_remove_at(vector* v, size_t index)
+void vector_remove_at(vector* v, size_t index, vector_element_dealloc dealloc)
 {
+	if(dealloc != NULL)
+	{
+		dealloc(vector_at(v, index));
+	}
 	memcpy(v->data + index * v->element_size, v->data + (index + 1) * v->element_size, (v->size - index - 1) * v->element_size);
 	v->size--;
 }

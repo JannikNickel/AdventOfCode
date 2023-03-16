@@ -1,4 +1,6 @@
-#pragma once
+#ifndef STR_H
+#define STR_H
+
 #include <stdlib.h>
 #include "vector.h"
 
@@ -50,3 +52,8 @@ vector string_split_all_cstr(string s, const char* search);
 
 //Generate a hash for a string
 size_t string_hash(string s);
+
+//Free the data of a string as void*. Can be used as dealloc function when deleting a vector of strings
+void string_dealloc(void* s);
+
+#endif

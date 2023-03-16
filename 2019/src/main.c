@@ -2,124 +2,116 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
-#include "common/str.h"
-#include "common/vector.h"
-#include "common/set.h"
+#include <time.h>
+#include "input.h"
+#include "result.h"
+#include "solutions.h"
 
-size_t hash(void* element)
-{
-	int v = *(int*)element;
-	return v;
-}
+#define USE_PERF_COUNTER 1
+#if _WIN32 && USE_PERF_COUNTER
+#include <windows.h>
+#endif
 
-size_t equals(void* a, void* b)
-{
-	int va = *(int*)a;
-	int vb = *(int*)b;
-	return va == vb;
-}
+const char* ANSI_ESC_ERROR = "\x1B[31m";
+const char* ANSI_ESC_INFO = "\x1B[90m";
+const char* ANSI_ESC_CLOSE = "\033[0m";
 
-typedef struct
-{
-	size_t key;
-	char str[64];
-} pair;
-
-size_t pair_hash(void* element)
-{
-	return ((pair*)element)->key;
-}
-
-size_t pair_equality(void* a, void* b)
-{
-	return ((pair*)a)->key == ((pair*)b)->key;
-}
-
-pair pair_create(size_t key, char str[64])
-{
-	pair p;
-	p.key = key;
-	strcpy_s(p.str, 64, str);
-	return p;
-}
-
-pair pair_key(size_t key)
-{
-	pair p;
-	p.key = key;
-	return p;
-}
+void solve(int day);
+void solve_part(const input* input, int day, int part);
+uint64_t nanoseconds();
+double time_diff(uint64_t start, uint64_t end);
 
 int main(int argc, char* argv[])
 {
-	/*string s = string_from("Hello World!");
-	size_t i = string_find_char(s, '_', 0);
-	bool x = i == -1;
-
-	string_pair pair = string_split_char(s, 'H');
-
-	string_append_cstr(&s, " :)");
-	printf("%s\n", s.data);
-	printf("%s\n", string_sub(s, 0, 5).data);
-	string_delete(&s);*/
-
-	/*vector v = vector_create(sizeof(int));
-	for(size_t i = 0; i < 10; i++)
+	vector solutions_to_run = vector_create(sizeof(int));
+	if(argc > 1)
 	{
-		vector_push(&v, &i);
+		if(argc >= 2 && strcmp(argv[1], "--day") == 0)
+		{
+			int day = atoi(argv[2]);
+			if(day <= 0 || day > SOLUTION_COUNT)
+			{
+				printf("%sExpected number in range [1, %d] after day argument!%s", ANSI_ESC_ERROR, SOLUTION_COUNT, ANSI_ESC_CLOSE);
+				return 1;
+			}
+			vector_push(&solutions_to_run, &day);
+		}
+		else if(strcmp(argv[1], "--day") == 0)
+		{
+			for(int i = 1; i <= SOLUTION_COUNT; i++)
+			{
+				vector_push(&solutions_to_run, &i);
+			}
+		}
+		else
+		{
+			printf("%sUnknown cmd args, running last solution!%s", ANSI_ESC_ERROR, SOLUTION_COUNT, ANSI_ESC_CLOSE);
+		}
 	}
 
-	int x = 777;
-	vector_insert(&v, 2, &x);
-	vector_remove_at(&v, 3);
-
-	for(size_t i = 0; i < v.size; i++)
+	if(solutions_to_run.size == 0)
 	{
-		printf("%d\n", *((int*)vector_at(&v, i)));
+		int last = SOLUTION_COUNT;
+		vector_push(&solutions_to_run, &last);
 	}
 
-	printf("index = %d\n", vector_index_of(&v, &x));
-	printf("index pred = %d\n", vector_index_of_pred(&v, is_777));*/
-
-	/*set s = set_create(sizeof(int), 4, NULL, NULL);
-	for(int i = 0; i < 8; i++)
+	for(int i = 0; i < solutions_to_run.size; i++)
 	{
-		set_insert(&s, &i);
+		solve(*(int*)vector_at(&solutions_to_run, i));
 	}
 
-	int x = 4;
-	set_remove(&s, &x);
-	x = 0;
-	set_remove(&s, &x);
+	vector_delete(&solutions_to_run, NULL);
+}
 
-	for(int i = 0; i < 10; i++)
-	{
-		printf("contains %d? %d\n", i, set_contains(&s, &i));
-	}
+void solve(int day)
+{
+	char path[sizeof("input/__.txt")];
+	snprintf(path, sizeof(path), "input/%02d.txt", day);
+	input* input = input_from_file(path);
 
-	set_iter it = set_iterator(&s);
-	void* element;
-	while((element = set_iter_next(&it)) != NULL)
-	{
-		printf("%d, ", *(size_t*)element);
-	}
+	printf("%sPreparing Solution %d - %s%s\n", ANSI_ESC_INFO, day, PUZZLE_NAMES[day - 1], ANSI_ESC_CLOSE);
+	solve_part(input, day, 1);
+	solve_part(input, day, 2);
 
-	printf("\n%d\n", s.size);*/
+	input_delete(input);
+	free(input);
+}
 
-	/*set s = set_create(sizeof(pair), 4, pair_hash, pair_equality);
-	pair p0 = pair_create(0, "First");
-	pair p1 = pair_create(1, "Second");
-	pair p2 = pair_create(2, "Third");
-	set_insert(&s, &p0);
-	set_insert(&s, &p1);
-	set_insert(&s, &p2);
+void solve_part(const input* input, int day, int part)
+{
+	printf("%sSolving Part %d...%s\n", ANSI_ESC_INFO, part, ANSI_ESC_CLOSE);
+	int index = SOLUTION_INDEX(day, part);
+	solution solution = SOLUTIONS[index];
 
-	pair k0 = pair_key(1);
-	printf("%d\n", set_contains(&s, &k0));
-	printf("%s\n", ((pair*)set_at(&s, &k0))->str);
-	set_delete(&s);*/
+	uint64_t start = nanoseconds();
+	result res = solution(input);
+	uint64_t end = nanoseconds();
+	printf("%sSolved Part %d (%.5lfms)\nResult:\n%s", ANSI_ESC_INFO, part, time_diff(start, end), ANSI_ESC_CLOSE);
+	result_print(res);
+	result_delete(res);
+	printf("\n\n");
+}
 
-	/*string s = string_from("Hello_World!");
-	s = string_replace(s, "!", "LL");
-	printf("%s|\n", s.data);*/
+uint64_t nanoseconds()
+{
+	#ifdef _WIN32 && USE_PERF_COUNTER
+	LARGE_INTEGER t;
+	QueryPerformanceCounter(&t);
+	return (uint64_t)t.QuadPart;
+	#else
+	struct timespec t;
+	timespec_get(&t, TIME_UTC);
+	return (uint64_t)t.tv_sec * 1000000000 + (uint64_t)t.tv_nsec;
+	#endif
+}
+
+double time_diff(uint64_t start, uint64_t end)
+{
+	#ifdef _WIN32 && USE_PERF_COUNTER
+	LARGE_INTEGER freq;
+	QueryPerformanceFrequency(&freq);
+	return (end - start) / (freq.QuadPart / 1000.0);
+	#else
+	return (end - start) * 1e-6;
+	#endif
 }

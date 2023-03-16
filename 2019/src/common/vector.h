@@ -1,4 +1,6 @@
-#pragma once
+#ifndef VECTOR_H
+#define VECTOR_H
+
 #include <stdbool.h>
 #include <stdint.h>
 
@@ -13,18 +15,19 @@ typedef struct
 } vector;
 
 typedef bool (*vector_pred)(size_t index, void* element);
+typedef void (*vector_element_dealloc)(void* element);
 
 //New empty vector with elements of size 'element_size'
 vector vector_create(size_t element_size);
 //New empty vector with elements of size 'element_size'
 vector* vector_new(size_t element_size);
-//Delete the content of the vector
-void vector_delete(vector* v);
+//Delete the content of the vector. (Optional) pass a function as 'dealloc' to run it for every element before deallocating the memory
+void vector_delete(vector* v, vector_element_dealloc dealloc);
 
 //Set the capacity of the vector. Only works if 'capacity' >= 'v->size'
 void vector_set_capacity(vector* v, size_t capacity);
-//Set the size of the vector to 0
-void vector_clear(vector* v);
+//Set the size of the vector to 0. (Optional) pass a function as 'dealloc' to run it for every element before removing it
+void vector_clear(vector* v, vector_element_dealloc dealloc);
 
 //Add an element to the end of this vector. The element is copied and should be of 'element_size'
 void vector_push(vector* v, void* element);
@@ -34,8 +37,8 @@ void* vector_at(vector* v, size_t index);
 void* vector_at_cpy(const vector* v, size_t index);
 //Insert an element at 'index'. The element is copied and should be of 'element_size'
 void vector_insert(vector* v, size_t index, void* element);
-//Remove the element at 'index'
-void vector_remove_at(vector* v, size_t index);
+//Remove the element at 'index'. (Optional) pass a function as 'dealloc' to run it for the removed element
+void vector_remove_at(vector* v, size_t index, vector_element_dealloc dealloc);
 //Find the index of an element. Returns -1 (size_t max) if not found
 size_t vector_index_of(const vector* v, void* element);
 //Find the index of an element by predicate. Returns -1 (size_t max) if not found
@@ -46,3 +49,5 @@ bool vector_all(const vector* v, vector_pred predicate);
 bool vector_any(const vector* v, vector_pred predicate);
 //Count the amount of elements that fulfill a condition
 bool vector_count(const vector* v, vector_pred predicate);
+
+#endif

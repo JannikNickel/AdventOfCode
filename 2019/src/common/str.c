@@ -6,7 +6,7 @@
 void copy_from_cstr(string* s, const char* c_str)
 {
 	int len = strlen(c_str);
-	s->data = (char*)malloc(sizeof(char) * (len + 1));
+	s->data = malloc(sizeof(char) * (len + 1));
 	memcpy(s->data, c_str, len + 1);
 	s->length = len;
 }
@@ -15,7 +15,7 @@ void append_from_cstr(string* s, const char* c_str, size_t size)
 {
 	int len = size == (size_t)(-1) ? strlen(c_str) : size;
 	char* old = s->data;
-	s->data = (char*)malloc(sizeof(char) * (s->length + len + 1));
+	s->data = malloc(sizeof(char) * (s->length + len + 1));
 	memcpy(s->data, old, sizeof(char) * s->length);
 	memcpy(s->data + sizeof(char) * s->length, c_str, sizeof(char) * (len + (size == (size_t)(-1) ? 1 : 0)));
 	s->length += len;
@@ -45,7 +45,7 @@ string string_from(const char* c_str)
 
 string* string_new(const char* c_str)
 {
-	string* s = (string*)malloc(sizeof(string));
+	string* s = malloc(sizeof(string));
 	copy_from_cstr(s, c_str);
 	return s;
 }
@@ -102,7 +102,7 @@ string string_sub(string s, size_t start, size_t length)
 		return string_empty();
 	}
 	string s_new;
-	s_new.data = (char*)malloc(sizeof(char) * (length + 1));
+	s_new.data = malloc(sizeof(char) * (length + 1));
 	memcpy(s_new.data, s.data + start, length);
 	s_new.data[length] = '\0';
 	s_new.length = length;
@@ -162,10 +162,6 @@ vector string_split_all_cstr(string s, const char* search)
 		string sub = string_sub(s, start, s.length - start);
 		vector_push(&v, &sub);
 	}
-	else
-	{
-		vector_push(&v, string_new(s.data));
-	}
 	return v;
 }
 
@@ -178,4 +174,9 @@ size_t string_hash(string s)
 		h = h * 5737 + c;
 	}
 	return h;
+}
+
+void string_dealloc(void* s)
+{
+	string_delete((string*)s);
 }

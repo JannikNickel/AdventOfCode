@@ -84,16 +84,24 @@ set set_create(size_t element_size, size_t bucket_count, set_hash hash, set_equa
 	return s;
 }
 
-void set_delete(set* set)
+void set_delete(set* set, set_element_dealloc dealloc)
 {
 	for(size_t i = 0; i < set->size; i++)
 	{
-		set_remove(set, set_at_index(set, i));
+		set_remove(set, set_at_index(set, 0), dealloc);
 	}
 	free(set->buckets);
 	set->buckets = NULL;
 	set->capacity = 0;
 	set->size = 0;
+}
+
+void set_clear(set* set, set_element_dealloc dealloc)
+{
+	for(size_t i = 0; i < set->size; i++)
+	{
+		set_remove(set, set_at_index(set, 0), dealloc);
+	}
 }
 
 bool set_insert(set* set, void* element)
@@ -127,7 +135,7 @@ bool set_contains(const set* set, void* element)
 	return find_slot(set, element) != NULL;
 }
 
-bool set_remove(set* set, void* element)
+bool set_remove(set* set, void* element, set_element_dealloc dealloc)
 {
 	size_t h = calc_hash(set, element);
 	struct slot** slot_ptr = get_bucket(set, h);
@@ -143,6 +151,11 @@ bool set_remove(set* set, void* element)
 		if(current->element_hash == h && test_equality(set, current->element, element))
 		{
 			*slot_ptr = current->next;
+
+			if(dealloc != NULL)
+			{
+				dealloc(current->element);
+			}
 			free(current->element);
 			free(current);
 			set->size--;
