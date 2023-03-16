@@ -14,6 +14,12 @@ typedef struct
 	size_t capacity;
 } vector;
 
+typedef struct
+{
+	vector* vector;
+	size_t index;
+} vector_iter;
+
 typedef bool (*vector_pred)(size_t index, void* element);
 typedef void (*vector_element_dealloc)(void* element);
 
@@ -49,5 +55,10 @@ bool vector_all(const vector* v, vector_pred predicate);
 bool vector_any(const vector* v, vector_pred predicate);
 //Count the amount of elements that fulfill a condition
 bool vector_count(const vector* v, vector_pred predicate);
+
+//Setup an iterator for the hashset. Use 'set_iter_next' to get the next element in a loop
+vector_iter vector_iterator(vector* v);
+//Move to the next element of the set iterator. Returns NULL if the end is reached
+void* vector_iter_next(vector_iter* iter);
 
 #endif

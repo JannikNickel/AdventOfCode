@@ -170,3 +170,18 @@ bool vector_count(const vector* v, vector_pred predicate)
 	}
 	return c;
 }
+
+vector_iter vector_iterator(vector* v)
+{
+	return (vector_iter) { .vector = v, .index = -1 };
+}
+
+void* vector_iter_next(vector_iter* iter)
+{
+	iter->index++;
+	if(iter->index < iter->vector->size)
+	{
+		return vector_at(iter->vector, iter->index);
+	}
+	return NULL;
+}
