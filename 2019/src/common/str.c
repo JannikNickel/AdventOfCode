@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 
-void copy_from_cstr(string* s, const char* c_str)
+static void copy_from_cstr(string* s, const char* c_str)
 {
 	int len = strlen(c_str);
 	s->data = malloc(sizeof(char) * (len + 1));
@@ -11,7 +11,7 @@ void copy_from_cstr(string* s, const char* c_str)
 	s->length = len;
 }
 
-void append_from_cstr(string* s, const char* c_str, size_t size)
+static void append_from_cstr(string* s, const char* c_str, size_t size)
 {
 	int len = size == (size_t)(-1) ? strlen(c_str) : size;
 	char* old = s->data;
@@ -22,7 +22,7 @@ void append_from_cstr(string* s, const char* c_str, size_t size)
 	free(old);
 }
 
-string_pair split_pair(string s, size_t index)
+static string_pair split_pair(string s, size_t index)
 {
 	if(index == (size_t)(-1))
 	{
@@ -73,6 +73,11 @@ void string_append(string* lhs, const string rhs)
 void string_append_cstr(string* lhs, const char* rhs)
 {
 	append_from_cstr(lhs, rhs, -1);
+}
+
+char string_at(string s, size_t index)
+{
+	return s.data[index];
 }
 
 size_t string_find_char(string s, char c, size_t start)
@@ -178,5 +183,5 @@ size_t string_hash(string s)
 
 void string_dealloc(void* s)
 {
-	string_delete((string*)s);
+	string_delete(s);
 }

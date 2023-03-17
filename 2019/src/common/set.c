@@ -2,14 +2,14 @@
 #include <stdlib.h>
 #include <string.h>
 
-struct slot
+struct set_slot
 {
 	size_t element_hash;
 	void* element;
-	struct slot* next;
+	struct set_slot* next;
 };
 
-size_t default_hash(void* element, size_t element_size)
+static size_t default_hash(void* element, size_t element_size)
 {
 	size_t h = 15127993;
 	for(size_t i = 0; i < element_size; i++)
@@ -20,30 +20,30 @@ size_t default_hash(void* element, size_t element_size)
 	return h;
 }
 
-size_t calc_hash(set* set, void* element)
+static size_t calc_hash(set* set, void* element)
 {
 	return set->hash != NULL ? set->hash(element) : default_hash(element, set->element_size);
 }
 
-size_t default_equality(void* a, void* b, size_t element_size)
+static size_t default_equality(void* a, void* b, size_t element_size)
 {
 	return memcmp(a, b, element_size) == 0;
 }
 
-size_t test_equality(set* set, void* a, void* b)
+static size_t test_equality(set* set, void* a, void* b)
 {
 	return set->equality != NULL ? set->equality(a, b) : default_equality(a, b, set->element_size);
 }
 
-struct slot** get_bucket(set* set, size_t hash)
+static struct set_slot** get_bucket(set* set, size_t hash)
 {
 	return &set->buckets[(hash & (set->capacity - 1))];
 }
 
-struct slot* find_slot(set* set, void* element)
+static struct set_slot* find_slot(set* set, void* element)
 {
 	size_t h = calc_hash(set, element);
-	struct slot* slot = *get_bucket(set, h);
+	struct set_slot* slot = *get_bucket(set, h);
 	while(slot != NULL)
 	{
 		if(slot->element != NULL)
@@ -58,13 +58,13 @@ struct slot* find_slot(set* set, void* element)
 	return NULL;
 }
 
-void insert_back_of_slot(struct slot* slot, void* element, size_t hash, size_t element_size)
+static void insert_back_of_slot(struct set_slot* slot, void* element, size_t hash, size_t element_size)
 {
 	while(slot->next != NULL)
 	{
 		slot = slot->next;
 	}
-	struct slot* s = malloc(sizeof(struct slot));
+	struct set_slot* s = malloc(sizeof(struct set_slot));
 	s->element = malloc(element_size);
 	memcpy(s->element, element, element_size);
 	s->element_hash = hash;
@@ -72,13 +72,66 @@ void insert_back_of_slot(struct slot* slot, void* element, size_t hash, size_t e
 	slot->next = s;
 }
 
-set set_create(size_t element_size, size_t bucket_count, set_hash hash, set_equality equality)
+static void insert_internal(set* set, void* element)
 {
+	size_t h = calc_hash(set, element);
+	struct set_slot** slot_ptr = get_bucket(set, h);
+	if(*slot_ptr == NULL)
+	{
+		struct set_slot* s = malloc(sizeof(struct set_slot));
+		s->element = malloc(set->element_size);
+		memcpy(s->element, element, set->element_size);
+		s->element_hash = h;
+		s->next = NULL;
+		*slot_ptr = s;
+	}
+	else
+	{
+		insert_back_of_slot(*slot_ptr, element, h, set->element_size);
+	}
+	set->size++;
+}
+
+static void set_resize(set* set)
+{
+	size_t old_capacity = set->capacity;
+	size_t new_capacity = old_capacity * 2;
+	struct set_slot** old = set->buckets;
+
+	set->buckets = (struct set_slot**)calloc(new_capacity, sizeof(struct set_slot*));
+	set->capacity = new_capacity;
+	set->size = 0;
+
+	for(size_t i = 0; i < old_capacity; i++)
+	{
+		struct set_slot* slot = old[i];
+		while(slot != NULL)
+		{
+			if(slot->element != NULL)
+			{
+				//Insert and remove old
+				insert_internal(set, slot->element);
+				free(slot->element);
+			}
+			struct set_slot* old = slot;
+			slot = slot->next;
+			free(old);
+		}
+	}
+}
+
+set set_create(size_t element_size, size_t bucket_count, float resize_factor, set_hash hash, set_equality equality)
+{
+	if(bucket_count < 4)
+	{
+		bucket_count = 32;
+	}
 	set s;
-	s.buckets = (struct slot**)calloc(bucket_count, sizeof(struct slot*));
+	s.buckets = (struct set_slot**)calloc(bucket_count, sizeof(struct set_slot*));
 	s.size = 0;
 	s.element_size = element_size;
 	s.capacity = bucket_count;
+	s.resize_factor = resize_factor;
 	s.hash = hash;
 	s.equality = equality;
 	return s;
@@ -111,22 +164,13 @@ bool set_insert(set* set, void* element)
 		return false;
 	}
 
-	size_t h = calc_hash(set, element);
-	struct slot** slot_ptr = get_bucket(set, h);
-	if(*slot_ptr == NULL)
+	float load_factor = set->size / (double)set->capacity;
+	if(load_factor > set->resize_factor)
 	{
-		struct slot* s = malloc(sizeof(struct slot));
-		s->element = malloc(set->element_size);
-		memcpy(s->element, element, set->element_size);
-		s->element_hash = h;
-		s->next = NULL;
-		*slot_ptr = s;
+		set_resize(set);
 	}
-	else
-	{
-		insert_back_of_slot(*slot_ptr, element, h, set->element_size);
-	}
-	set->size++;
+
+	insert_internal(set, element);
 	return true;
 }
 
@@ -138,9 +182,9 @@ bool set_contains(const set* set, void* element)
 bool set_remove(set* set, void* element, set_element_dealloc dealloc)
 {
 	size_t h = calc_hash(set, element);
-	struct slot** slot_ptr = get_bucket(set, h);
+	struct set_slot** slot_ptr = get_bucket(set, h);
 
-	struct slot* current = *slot_ptr;
+	struct set_slot* current = *slot_ptr;
 	if(current == NULL)
 	{
 		return false;
@@ -169,7 +213,7 @@ bool set_remove(set* set, void* element, set_element_dealloc dealloc)
 
 void* set_at(set* set, void* element)
 {
-	struct slot* s = find_slot(set, element);
+	struct set_slot* s = find_slot(set, element);
 	if(s != NULL)
 	{
 		return s->element;
@@ -179,7 +223,7 @@ void* set_at(set* set, void* element)
 
 void* set_at_cpy(const set* set, void* element)
 {
-	struct slot* s = find_slot(set, element);
+	struct set_slot* s = find_slot(set, element);
 	if(s != NULL)
 	{
 		void* data = malloc(set->element_size);
@@ -194,7 +238,7 @@ void* set_at_index(set* set, size_t index)
 	size_t c = 0;
 	for(size_t i = 0; i < set->capacity; i++)
 	{
-		struct slot* s = set->buckets[i];
+		struct set_slot* s = set->buckets[i];
 		while(s != NULL)
 		{
 			if(c == index)

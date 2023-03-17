@@ -67,4 +67,7 @@ vector_iter vector_iterator(vector* v);
 //Move to the next element of the set iterator. Returns NULL if the end is reached
 void* vector_iter_next(vector_iter* iter);
 
+//Free the data of a vector as void*. Can be used as dealloc function when deleting a vector of vector
+void vector_dealloc(void* v);
+
 #endif

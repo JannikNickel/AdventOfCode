@@ -9,16 +9,17 @@ typedef size_t (*set_hash)(void* element);
 typedef size_t (*set_equality)(void* a, void* b);
 typedef void (*set_element_dealloc)(void* element);
 
-struct slot;
+struct set_slot;
 
 //Hashset which can be used as hashmap by using a struct with key/value pair and custom hash/equality functions
 //Stores copied elements
 typedef struct
 {
-	struct slot** buckets;
+	struct set_slot** buckets;
 	size_t element_size;
 	size_t size;
 	size_t capacity;
+	float resize_factor;
 	set_hash hash;
 	set_equality equality;
 } set;
@@ -27,13 +28,13 @@ typedef struct
 {
 	set* set;
 	size_t bucket;
-	struct slot* slot;
+	struct set_slot* slot;
 } set_iter;
 
 //New empty hashset with elements of size 'element_size', 'bucket_count' buckets (non resizable)
 //'hash' function is optional, default hashes based on bytes
 //'equality' is optional, default compares bytes
-set set_create(size_t element_size, size_t bucket_count, set_hash hash, set_equality equality);
+set set_create(size_t element_size, size_t bucket_count, float resize_factor, set_hash hash, set_equality equality);
 //Delete all elements in the hashset. (Optional) pass a function as 'dealloc' to run it for every element before deallocating the memory
 void set_delete(set* set, set_element_dealloc dealloc);
 //Removes all elements in the hashset. (Optional) pass a function as 'dealloc' to run it for every element before deallocating the memory

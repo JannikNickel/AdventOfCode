@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-void ensure_capacity(vector* v, size_t min_capacity)
+static void ensure_capacity(vector* v, size_t min_capacity)
 {
 	if(v->capacity < min_capacity)
 	{
@@ -216,4 +216,9 @@ void* vector_iter_next(vector_iter* iter)
 		return vector_at(iter->vector, iter->index);
 	}
 	return NULL;
+}
+
+void vector_dealloc(void* v)
+{
+	vector_delete(v, NULL);
 }

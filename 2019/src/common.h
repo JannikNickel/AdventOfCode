@@ -10,3 +10,4 @@
 #include "common/str.h"
 #include "common/vector.h"
 #include "common/set.h"
+#include "common/vec2.h"

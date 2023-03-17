@@ -33,6 +33,8 @@ void string_append(string* lhs, const string rhs);
 //Append the rhs c-string to the lhs string ptr (modifies lhs)
 void string_append_cstr(string* lhs, const char* rhs);
 
+//Get the char at 'index'
+char string_at(string s, size_t index);
 //Find the index of a char in a string beginning at index 'start'. Returns -1 (size_t max) if not found
 size_t string_find_char(string s, char c, size_t start);
 //Find the start index of a c-substring in a string beginning at index 'start'. Returns -1 (size_t max) if not found

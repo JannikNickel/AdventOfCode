@@ -1,8 +1,8 @@
 #include "solutions.h"
 #include "common.h"
 
-uint64_t run_intcode(vector* code);
-vector parse_input(const input* input);
+static uint64_t run_intcode(vector* code);
+static vector parse_input(const input* input);
 
 result day02_part1(const input* input)
 {
@@ -11,6 +11,7 @@ result day02_part1(const input* input)
 	vector_set(&code, 1, &first, NULL);
 	vector_set(&code, 2, &second, NULL);
 	uint64_t res = run_intcode(&code);
+	vector_delete(&code, NULL);
 	return result_int(res);
 }
 
@@ -28,10 +29,12 @@ result day02_part2(const input* input)
 			vector_delete(&code_instance, NULL);
 			if(res == 19690720)
 			{
+				vector_delete(&code, NULL);
 				return result_int(100 * i + k);
 			}
 		}
 	}
+	vector_delete(&code, NULL);
 	return result_none();
 }
 
