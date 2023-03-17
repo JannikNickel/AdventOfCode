@@ -26,6 +26,8 @@ typedef void* (*vector_element_copy)(void* element);
 
 //New empty vector with elements of size 'element_size'
 vector vector_create(size_t element_size);
+//New vector with elements of size 'element_size' which copies the 'elements'
+vector vector_from(size_t element_size, void* elements, size_t elements_len);
 //New empty vector with elements of size 'element_size'
 vector* vector_new(size_t element_size);
 //Delete the content of the vector. (Optional) pass a function as 'dealloc' to run it for every element before deallocating the memory
@@ -47,6 +49,10 @@ void vector_set(vector* v, size_t index, void* element, vector_element_dealloc d
 void* vector_at(vector* v, size_t index);
 //Return a copy of the element at 'index'
 void* vector_at_cpy(const vector* v, size_t index);
+//Peek at the memory of the first element
+void* vector_first(vector* v);
+//Peek at the memory of the last element
+void* vector_last(vector* v);
 //Insert an element at 'index'. The element is copied and should be of 'element_size'
 void vector_insert(vector* v, size_t index, void* element);
 //Remove the element at 'index'. (Optional) pass a function as 'dealloc' to run it for the removed element

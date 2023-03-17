@@ -17,6 +17,16 @@ vector vector_create(size_t element_size)
 	return v;
 }
 
+vector vector_from(size_t element_size, void* elements, size_t elements_len)
+{
+	vector v = vector_create(element_size);
+	for(size_t i = 0; i < elements_len; i++)
+	{
+		vector_push(&v, (uint8_t*)elements + element_size * i);
+	}
+	return v;
+}
+
 vector* vector_new(size_t element_size)
 {
 	vector v = vector_create(element_size);
@@ -115,6 +125,16 @@ void* vector_at_cpy(const vector* v, size_t index)
 	void* data = malloc(v->element_size);
 	memcpy(v->data + v->element_size * index, data, v->element_size);
 	return data;
+}
+
+void* vector_first(vector* v)
+{
+	return vector_at(v, 0);
+}
+
+void* vector_last(vector* v)
+{
+	return vector_at(v, v->size - 1);
 }
 
 void vector_insert(vector* v, size_t index, void* element)
