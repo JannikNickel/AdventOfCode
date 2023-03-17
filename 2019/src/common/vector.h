@@ -22,6 +22,7 @@ typedef struct
 
 typedef bool (*vector_pred)(size_t index, void* element);
 typedef void (*vector_element_dealloc)(void* element);
+typedef void* (*vector_element_copy)(void* element);
 
 //New empty vector with elements of size 'element_size'
 vector vector_create(size_t element_size);
@@ -29,14 +30,19 @@ vector vector_create(size_t element_size);
 vector* vector_new(size_t element_size);
 //Delete the content of the vector. (Optional) pass a function as 'dealloc' to run it for every element before deallocating the memory
 void vector_delete(vector* v, vector_element_dealloc dealloc);
+//Copy the vector data into a new vector.
+//(Optional) pass a function to adjust how elements are copied. This is required for structs that hold additional pointers if you want to create deep copy. The result of the copy is freed after copying it into the vector memory
+vector vector_clone(const vector* v, vector_element_copy copy);
 
 //Set the capacity of the vector. Only works if 'capacity' >= 'v->size'
 void vector_set_capacity(vector* v, size_t capacity);
 //Set the size of the vector to 0. (Optional) pass a function as 'dealloc' to run it for every element before removing it
 void vector_clear(vector* v, vector_element_dealloc dealloc);
 
-//Add an element to the end of this vector. The element is copied and should be of 'element_size'
+//Add an element to the end of the vector. The element is copied and should be of 'element_size'
 void vector_push(vector* v, void* element);
+//Set the 'index'-th element of the vector. The element is copied and should be of 'element_size'. (Optional) pass a function as 'dealloc' to run it before replacing the element
+void vector_set(vector* v, size_t index, void* element, vector_element_dealloc dealloc);
 //Peek at the memory of the element at 'index'
 void* vector_at(vector* v, size_t index);
 //Return a copy of the element at 'index'

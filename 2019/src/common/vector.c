@@ -40,6 +40,30 @@ void vector_delete(vector* v, vector_element_dealloc dealloc)
 	v->capacity = 0;
 }
 
+vector vector_clone(const vector* v, vector_element_copy copy)
+{
+	vector new_vec = vector_create(v->element_size);
+	if(v->capacity > 4)
+	{
+		vector_set_capacity(&new_vec, v->capacity);
+	}
+	if(copy != NULL)
+	{
+		for(size_t i = 0; i < v->size; i++)
+		{
+			void* cpy = copy(vector_at(v, i));
+			vector_push(&new_vec, cpy);
+			free(cpy);
+		}
+	}
+	else
+	{
+		memcpy(new_vec.data, v->data, v->element_size * v->size);
+		new_vec.size = v->size;
+	}
+	return new_vec;
+}
+
 void vector_set_capacity(vector* v, size_t capacity)
 {
 	if(capacity < v->size)
@@ -57,12 +81,9 @@ void vector_set_capacity(vector* v, size_t capacity)
 
 void vector_clear(vector* v, vector_element_dealloc dealloc)
 {
-	if(dealloc != NULL)
+	for(uint64_t i = v->size - 1; i >= 0; i--)
 	{
-		for(size_t i = 0; i < v->size; i++)
-		{
-			dealloc(vector_at(v, i));
-		}
+		vector_remove_at(v, i, dealloc);
 	}
 	v->size = 0;
 }
@@ -72,6 +93,16 @@ void vector_push(vector* v, void* element)
 	ensure_capacity(v, v->size + 1);
 	memcpy(v->data + v->size * v->element_size, element, v->element_size);
 	v->size++;
+}
+
+void vector_set(vector* v, size_t index, void* element, vector_element_dealloc dealloc)
+{
+	void* prev = vector_at(v, index);
+	if(dealloc != NULL && prev != NULL)
+	{
+		dealloc(prev);
+	}
+	memcpy(prev, element, v->element_size);
 }
 
 void* vector_at(vector* v, size_t index)
@@ -107,6 +138,7 @@ void vector_remove_at(vector* v, size_t index, vector_element_dealloc dealloc)
 		dealloc(vector_at(v, index));
 	}
 	memcpy(v->data + index * v->element_size, v->data + (index + 1) * v->element_size, (v->size - index - 1) * v->element_size);
+	memset(v->data + (v->size - 1) * v->element_size, 0, v->element_size);
 	v->size--;
 }
 

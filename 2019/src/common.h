@@ -5,6 +5,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <math.h>
+#include <limits.h>
 
 #include "common/str.h"
 #include "common/vector.h"
