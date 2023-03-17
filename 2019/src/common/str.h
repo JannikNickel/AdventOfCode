@@ -27,6 +27,8 @@ string* string_new(const char* c_str);
 string string_copy(string s);
 //Delete the content of a string
 void string_delete(string* s);
+//Delete both strings of a pair
+void string_pair_delete(string_pair* pair);
 
 //Append the rhs string to the lhs string ptr (modifies lhs)
 void string_append(string* lhs, const string rhs);

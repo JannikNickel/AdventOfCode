@@ -15,9 +15,11 @@
     <ClCompile Include="src\common\str.c" />
     <ClCompile Include="src\common\vec2.c" />
     <ClCompile Include="src\common\vector.c" />
+    <ClCompile Include="src\day00.c" />
     <ClCompile Include="src\day01.c" />
     <ClCompile Include="src\day02.c" />
     <ClCompile Include="src\day03.c" />
+    <ClCompile Include="src\day04.c" />
     <ClCompile Include="src\input.c" />
     <ClCompile Include="src\main.c" />
   </ItemGroup>

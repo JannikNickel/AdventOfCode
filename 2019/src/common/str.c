@@ -65,6 +65,15 @@ void string_delete(string* s)
 	}
 }
 
+void string_pair_delete(string_pair* pair)
+{
+	if(pair != NULL)
+	{
+		string_delete(&pair->a);
+		string_delete(&pair->b);
+	}
+}
+
 void string_append(string* lhs, const string rhs)
 {
 	append_from_cstr(lhs, rhs.data, -1);
