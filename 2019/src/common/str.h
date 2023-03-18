@@ -56,6 +56,10 @@ vector string_split_all_cstr(string s, const char* search);
 
 //Generate a hash for a string
 size_t string_hash(string s);
+//Generate a hash for a string
+size_t string_hash_c(const char* s);
+//Generate a hash for a string
+bool string_equals(string a, string b);
 
 //Free the data of a string as void*. Can be used as dealloc function when deleting a vector of strings
 void string_dealloc(void* s);

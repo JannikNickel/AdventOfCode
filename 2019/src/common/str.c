@@ -181,13 +181,24 @@ vector string_split_all_cstr(string s, const char* search)
 
 size_t string_hash(string s)
 {
+	return string_hash_c(s.data);
+}
+
+size_t string_hash_c(const char* s)
+{
+	size_t len = strlen(s);
 	size_t h = 15127993;
-	for(size_t i = 0; i < s.length; i++)
+	for(size_t i = 0; i < len; i++)
 	{
-		char c = s.data[i];
+		char c = s[i];
 		h = h * 5737 + c;
 	}
 	return h;
+}
+
+bool string_equals(string a, string b)
+{
+	return a.length == b.length && memcmp(a.data, b.data, a.length) == 0;
 }
 
 void string_dealloc(void* s)

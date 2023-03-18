@@ -91,7 +91,7 @@ void vector_set_capacity(vector* v, size_t capacity)
 
 void vector_clear(vector* v, vector_element_dealloc dealloc)
 {
-	for(uint64_t i = v->size - 1; i >= 0; i--)
+	for(int64_t i = v->size - 1; i >= 0; i--)
 	{
 		vector_remove_at(v, i, dealloc);
 	}
