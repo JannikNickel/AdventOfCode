@@ -23,6 +23,7 @@ typedef struct
 typedef bool (*vector_pred)(size_t index, void* element);
 typedef void (*vector_element_dealloc)(void* element);
 typedef void* (*vector_element_copy)(void* element);
+typedef int64_t (*vector_element_ord)(void* element);
 
 //New empty vector with elements of size 'element_size'
 vector vector_create(size_t element_size);
@@ -70,7 +71,11 @@ bool vector_all(const vector* v, vector_pred predicate);
 //Test if all elements in the vector fulfill a condition
 bool vector_any(const vector* v, vector_pred predicate);
 //Count the amount of elements that fulfill a condition
-bool vector_count(const vector* v, vector_pred predicate);
+size_t vector_count(const vector* v, vector_pred predicate);
+//Peek at the memory of the element with the min value by 'ord'
+void* vector_min(const vector* v, vector_element_ord ord);
+//Peek at the memory of the element with the max value by 'ord'
+void* vector_max(const vector* v, vector_element_ord ord);
 
 //Setup an iterator for the hashset. Use 'set_iter_next' to get the next element in a loop
 vector_iter vector_iterator(vector* v);

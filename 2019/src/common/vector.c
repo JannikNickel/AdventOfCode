@@ -220,7 +220,7 @@ bool vector_any(const vector* v, vector_pred predicate)
 	return false;
 }
 
-bool vector_count(const vector* v, vector_pred predicate)
+size_t vector_count(const vector* v, vector_pred predicate)
 {
 	size_t c = 0;
 	for(size_t i = 0; i < v->size; i++)
@@ -231,6 +231,38 @@ bool vector_count(const vector* v, vector_pred predicate)
 		}
 	}
 	return c;
+}
+
+void* vector_min(const vector* v, vector_element_ord ord)
+{
+	int64_t min = INT64_MAX;
+	size_t index = -1;
+	for(size_t i = 0; i < v->size; i++)
+	{
+		int64_t o = ord(vector_at(v, i));
+		if(o < min)
+		{
+			min = o;
+			index = i;
+		}
+	}
+	return index != -1 ? vector_at(v, index) : NULL;
+}
+
+void* vector_max(const vector* v, vector_element_ord ord)
+{
+	int64_t max = INT64_MAX;
+	size_t index = -1;
+	for(size_t i = 0; i < v->size; i++)
+	{
+		int64_t o = ord(vector_at(v, i));
+		if(o > max)
+		{
+			max = o;
+			index = i;
+		}
+	}
+	return index != -1 ? vector_at(v, index) : NULL;
 }
 
 vector_iter vector_iterator(vector* v)
