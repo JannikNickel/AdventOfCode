@@ -62,9 +62,13 @@ static uint64_t param(vector* code, size_t code_addr, param_mode mode)
 	return p;
 }
 
-void intcode_run(vector* code, vector* input, vector* output)
+intcode_run_result intcode_run(vector* code, vector* input, vector* output)
 {
-	size_t inst_ptr = 0;
+	return intcode_continue(code, input, output, 0, false, false);
+}
+
+intcode_run_result intcode_continue(vector* code, vector* input, vector* output, size_t inst_ptr, bool break_inp, bool break_out)
+{
 	instruction inst;
 	while((inst = parse_inst(*(int64_t*)vector_at(code, inst_ptr))).op != OP_END)
 	{
@@ -95,10 +99,21 @@ void intcode_run(vector* code, vector* input, vector* output)
 			{
 				int64_t res_addr = param(code, inst_ptr + 1, IMMEDIATE);
 				int64_t res = 0;
-				if(input != NULL && input->size != 0)
+				if(break_inp)
 				{
-					res = *(int64_t*)vector_at(input, 0);
-					vector_remove_at(input, 0, NULL);
+					return (intcode_run_result) { .type = IC_INP_BREAK, .inst_ptr = inst_ptr };
+				}
+				if(input != NULL)
+				{
+					if(input->size != 0)
+					{
+						res = *(int64_t*)vector_at(input, 0);
+						vector_remove_at(input, 0, NULL);
+					}
+					else
+					{
+						return (intcode_run_result) { .type = IC_INP_MISSING, .inst_ptr = inst_ptr };
+					}
 				}
 				vector_set(code, res_addr, &res, NULL);
 
@@ -114,6 +129,10 @@ void intcode_run(vector* code, vector* input, vector* output)
 				}
 
 				inst_ptr += 2;
+				if(break_out)
+				{
+					return (intcode_run_result) { .type = IC_OUT_BREAK, .inst_ptr = inst_ptr };
+				}
 				break;
 			}
 			case OP_JIT:
@@ -135,6 +154,7 @@ void intcode_run(vector* code, vector* input, vector* output)
 				break;
 		}
 	}
+	return (intcode_run_result) { .type = IC_END, .inst_ptr = inst_ptr };
 }
 
 vector intcode_run_simple(string code_str, int64_t* input, size_t input_len)

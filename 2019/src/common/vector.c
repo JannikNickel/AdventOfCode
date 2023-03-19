@@ -162,6 +162,16 @@ void vector_remove_at(vector* v, size_t index, vector_element_dealloc dealloc)
 	v->size--;
 }
 
+void vector_remove_first(vector* v, vector_element_dealloc dealloc)
+{
+	vector_remove_at(v, 0, dealloc);
+}
+
+void vector_remove_last(vector* v, vector_element_dealloc dealloc)
+{
+	vector_remove_at(v, v->size - 1, dealloc);
+}
+
 size_t vector_index_of(const vector* v, void* element)
 {
 	for(size_t i = 0; i < v->size; i++)

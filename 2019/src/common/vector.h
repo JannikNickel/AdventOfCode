@@ -57,6 +57,10 @@ void* vector_last(vector* v);
 void vector_insert(vector* v, size_t index, void* element);
 //Remove the element at 'index'. (Optional) pass a function as 'dealloc' to run it for the removed element
 void vector_remove_at(vector* v, size_t index, vector_element_dealloc dealloc);
+//Remove the first element. (Optional) pass a function as 'dealloc' to run it for the removed element
+void vector_remove_first(vector* v, vector_element_dealloc dealloc);
+//Remove the last element. (Optional) pass a function as 'dealloc' to run it for the removed element
+void vector_remove_last(vector* v, vector_element_dealloc dealloc);
 //Find the index of an element. Returns -1 (size_t max) if not found
 size_t vector_index_of(const vector* v, void* element);
 //Find the index of an element by predicate. Returns -1 (size_t max) if not found
