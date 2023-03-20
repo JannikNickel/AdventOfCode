@@ -36,7 +36,7 @@ int main(int argc, char* argv[])
 			}
 			vector_push(&solutions_to_run, &day);
 		}
-		else if(strcmp(argv[1], "--day") == 0)
+		else if(strcmp(argv[1], "--all") == 0)
 		{
 			for(int i = 1; i <= SOLUTION_COUNT; i++)
 			{

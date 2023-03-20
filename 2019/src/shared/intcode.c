@@ -7,7 +7,8 @@
 typedef enum
 {
 	ADDRESS = 0,
-	IMMEDIATE = 1
+	IMMEDIATE = 1,
+	RELATIVE = 2
 } param_mode;
 
 typedef enum
@@ -20,6 +21,7 @@ typedef enum
 	OP_JIF = 6,
 	OP_LTN = 7,
 	OP_EQL = 8,
+	OP_REL = 9,
 	OP_END = 99
 } op;
 
@@ -46,19 +48,48 @@ static instruction parse_inst(int64_t code)
 	return (instruction)
 	{
 		.op = (op)(inst_seg(code, 0) + 10 * inst_seg(code, 1)),
-		.p0_mode = inst_seg(code, 2),
-		.p1_mode = inst_seg(code, 3),
-		.p2_mode = inst_seg(code, 4)
+			.p0_mode = inst_seg(code, 2),
+			.p1_mode = inst_seg(code, 3),
+			.p2_mode = inst_seg(code, 4)
 	};
 }
 
-static uint64_t param(vector* code, size_t code_addr, param_mode mode)
+static void ensure_mem_size(vector* code, size_t size)
 {
-	int64_t p = *(int64_t*)vector_at(code, code_addr);
-	if(mode == ADDRESS)
+	while(size >= code->size)
 	{
-		p = *(int64_t*)vector_at(code, p);
+		vector_push(code, &(int64_t) { 0 });
 	}
+}
+
+static int64_t mem_access(vector* code, size_t addr)
+{
+	ensure_mem_size(code, addr);
+	return *(int64_t*)vector_at(code, addr);
+}
+
+static int64_t param(vector* code, size_t code_addr, size_t relative_base, param_mode mode)
+{
+	int64_t p = mem_access(code, code_addr);
+	if(mode == RELATIVE)
+	{
+		p += relative_base;
+	}
+	if(mode == ADDRESS || mode == RELATIVE)
+	{
+		p = mem_access(code, p);
+	}
+	return p;
+}
+
+static int64_t addr(vector* code, size_t code_addr, size_t relative_base, param_mode mode)
+{
+	int64_t p = mem_access(code, code_addr);
+	if(mode == RELATIVE)
+	{
+		p += relative_base;
+	}
+	ensure_mem_size(code, p);
 	return p;
 }
 
@@ -69,6 +100,7 @@ intcode_run_result intcode_run(vector* code, vector* input, vector* output)
 
 intcode_run_result intcode_continue(vector* code, vector* input, vector* output, size_t inst_ptr, bool break_inp, bool break_out)
 {
+	size_t relative_base = 0;
 	instruction inst;
 	while((inst = parse_inst(*(int64_t*)vector_at(code, inst_ptr))).op != OP_END)
 	{
@@ -79,9 +111,9 @@ intcode_run_result intcode_continue(vector* code, vector* input, vector* output,
 			case OP_LTN:
 			case OP_EQL:
 			{
-				int64_t lhs = param(code, inst_ptr + 1, inst.p0_mode);
-				int64_t rhs = param(code, inst_ptr + 2, inst.p1_mode);
-				int64_t res_addr = param(code, inst_ptr + 3, IMMEDIATE);
+				int64_t lhs = param(code, inst_ptr + 1, relative_base, inst.p0_mode);
+				int64_t rhs = param(code, inst_ptr + 2, relative_base, inst.p1_mode);
+				int64_t res_addr = addr(code, inst_ptr + 3, relative_base, inst.p2_mode);
 				int64_t res = 0;
 				switch(inst.op)
 				{
@@ -97,7 +129,7 @@ intcode_run_result intcode_continue(vector* code, vector* input, vector* output,
 			}
 			case OP_INP:
 			{
-				int64_t res_addr = param(code, inst_ptr + 1, IMMEDIATE);
+				int64_t res_addr = addr(code, inst_ptr + 1, relative_base, inst.p0_mode);
 				int64_t res = 0;
 				if(break_inp)
 				{
@@ -124,7 +156,7 @@ intcode_run_result intcode_continue(vector* code, vector* input, vector* output,
 			{
 				if(output != NULL)
 				{
-					int64_t res = param(code, inst_ptr + 1, inst.p0_mode);
+					int64_t res = param(code, inst_ptr + 1, relative_base, inst.p0_mode);
 					vector_push(output, &res);
 				}
 
@@ -138,8 +170,8 @@ intcode_run_result intcode_continue(vector* code, vector* input, vector* output,
 			case OP_JIT:
 			case OP_JIF:
 			{
-				int64_t cond = param(code, inst_ptr + 1, inst.p0_mode);
-				int64_t addr = param(code, inst_ptr + 2, inst.p1_mode);
+				int64_t cond = param(code, inst_ptr + 1, relative_base, inst.p0_mode);
+				int64_t addr = param(code, inst_ptr + 2, relative_base, inst.p1_mode);
 				if(inst.op == OP_JIT ? cond : !cond)
 				{
 					inst_ptr = addr;
@@ -147,6 +179,14 @@ intcode_run_result intcode_continue(vector* code, vector* input, vector* output,
 				}
 
 				inst_ptr += 3;
+				break;
+			}
+			case OP_REL:
+			{
+				int64_t mod = param(code, inst_ptr + 1, relative_base, inst.p0_mode);
+				relative_base += mod;
+
+				inst_ptr += 2;
 				break;
 			}
 			default:
@@ -166,6 +206,14 @@ vector intcode_run_simple(string code_str, int64_t* input, size_t input_len)
 	vector_delete(&code, NULL);
 	vector_delete(&in, NULL);
 	return output;
+}
+
+int64_t intcode_run_simple_out(string code_str, int64_t* input, size_t input_len)
+{
+	vector out = intcode_run_simple(code_str, input, input_len);
+	int64_t res = out.size > 0 ? *(int64_t*)vector_last(&out) : 0;
+	vector_delete(&out, NULL);
+	return res;
 }
 
 vector intcode_parse(string source)
