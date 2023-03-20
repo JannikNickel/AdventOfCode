@@ -20,10 +20,11 @@ typedef struct
 	size_t index;
 } vector_iter;
 
-typedef bool (*vector_pred)(size_t index, void* element);
+typedef bool (*vector_pred)(size_t index, const void* element);
 typedef void (*vector_element_dealloc)(void* element);
 typedef void* (*vector_element_copy)(void* element);
-typedef int64_t (*vector_element_ord)(void* element);
+typedef int64_t (*vector_element_ord)(const void* element);
+typedef int (*vector_element_sort)(const void* a, const void* b);
 
 //New empty vector with elements of size 'element_size'
 vector vector_create(size_t element_size);
@@ -76,10 +77,12 @@ size_t vector_count(const vector* v, vector_pred predicate);
 void* vector_min(const vector* v, vector_element_ord ord);
 //Peek at the memory of the element with the max value by 'ord'
 void* vector_max(const vector* v, vector_element_ord ord);
+//Sort the vector in ascending order based on the 'sort' result
+void vector_sort(const vector* v, vector_element_sort sort);
 
-//Setup an iterator for the hashset. Use 'set_iter_next' to get the next element in a loop
+//Setup an iterator for the hashset. Use 'vec_iter_next' to get the next element in a loop
 vector_iter vector_iterator(vector* v);
-//Move to the next element of the set iterator. Returns NULL if the end is reached
+//Move to the next element of the vec iterator. Returns NULL if the end is reached
 void* vector_iter_next(vector_iter* iter);
 
 //Free the data of a vector as void*. Can be used as dealloc function when deleting a vector of vector

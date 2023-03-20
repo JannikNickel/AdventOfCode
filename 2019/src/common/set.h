@@ -5,8 +5,8 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-typedef size_t (*set_hash)(void* element);
-typedef size_t (*set_equality)(void* a, void* b);
+typedef size_t (*set_hash)(const void* element);
+typedef size_t (*set_equality)(const void* a, const void* b);
 typedef void (*set_element_dealloc)(void* element);
 
 struct set_slot;

@@ -15,8 +15,8 @@ typedef struct
 } instruction;
 
 static int32_t find_closest(const input* wires, bool distance);
-static size_t cell_hash(struct cell* element);
-static size_t cell_equals(struct cell* a, struct cell* b);
+static size_t cell_hash(const struct cell* element);
+static size_t cell_equals(const struct cell* a, const struct cell* b);
 static vector parse_input(const input* input);
 
 result day03_part1(const input* input)
@@ -78,12 +78,12 @@ int32_t find_closest(const input* input, bool distance)
 	return distance ? c_dst : c_steps;
 }
 
-size_t cell_hash(cell* element)
+size_t cell_hash(const cell* element)
 {
 	return vec2_hash(element->key);
 }
 
-size_t cell_equals(cell* a,  cell* b)
+size_t cell_equals(const cell* a, const cell* b)
 {
 	return vec2_equals(a->key, b->key);
 }

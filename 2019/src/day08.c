@@ -10,7 +10,7 @@ typedef struct
 } layer;
 
 static vector parse_input(const input* input);
-static int64_t count_zeros(layer* l);
+static int64_t count_zeros(const layer* l);
 
 result day08_part1(const input* input)
 {
@@ -65,7 +65,7 @@ vector parse_input(const input* input)
 	return v;
 }
 
-int64_t count_zeros(layer* l)
+int64_t count_zeros(const layer* l)
 {
 	int64_t c = 0;
 	for(size_t i = 0; i < WIDTH * HEIGHT; i++)

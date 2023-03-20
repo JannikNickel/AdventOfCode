@@ -256,32 +256,34 @@ set_iter set_iterator(set* set)
 {
 	set_iter iter;
 	iter.set = set;
-	iter.bucket = 0;
+	iter.bucket = -1;
 	iter.slot = NULL;
 	return iter;
 }
 
 void* set_iter_next(set_iter* iter)
 {
-	if(iter->slot == NULL)
+	if(iter->bucket == -1)
 	{
-		iter->slot = iter->set->buckets[0];
-	}
-	else
-	{
-		while(iter->bucket < iter->set->capacity)
+		iter->bucket = 0;
+		iter->slot = iter->set->buckets[iter->bucket];
+		if(iter->slot != NULL)
 		{
-			if(iter->slot != NULL && iter->slot->next != NULL)
-			{
-				iter->slot = iter->slot->next;
-				break;
-			}
-			iter->bucket++;
-			iter->slot = iter->bucket < iter->set->capacity ? iter->set->buckets[iter->bucket] : NULL;
-			if(iter->slot != NULL)
-			{
-				break;
-			}
+			return iter->slot->element;
+		}
+	}
+	while(iter->bucket < iter->set->capacity)
+	{
+		if(iter->slot != NULL && iter->slot->next != NULL)
+		{
+			iter->slot = iter->slot->next;
+			break;
+		}
+		iter->bucket++;
+		iter->slot = iter->bucket < iter->set->capacity ? iter->set->buckets[iter->bucket] : NULL;
+		if(iter->slot != NULL)
+		{
+			break;
 		}
 	}
 	return iter->slot != NULL ? iter->slot->element : NULL;

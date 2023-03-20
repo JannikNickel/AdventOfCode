@@ -265,6 +265,15 @@ void* vector_max(const vector* v, vector_element_ord ord)
 	return index != -1 ? vector_at(v, index) : NULL;
 }
 
+void vector_sort(const vector* v, vector_element_sort sort)
+{
+	if(v->size <= 1)
+	{
+		return;
+	}
+	qsort(v->data, v->size, v->element_size, sort);
+}
+
 vector_iter vector_iterator(vector* v)
 {
 	return (vector_iter) { .vector = v, .index = -1 };
