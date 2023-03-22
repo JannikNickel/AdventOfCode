@@ -14,6 +14,7 @@
     <ClCompile Include="src\common\set.c" />
     <ClCompile Include="src\common\str.c" />
     <ClCompile Include="src\common\vec2.c" />
+    <ClCompile Include="src\common\vec3.c" />
     <ClCompile Include="src\common\vector.c" />
     <ClCompile Include="src\day00.c" />
     <ClCompile Include="src\day01.c" />
@@ -27,6 +28,7 @@
     <ClCompile Include="src\day09.c" />
     <ClCompile Include="src\day10.c" />
     <ClCompile Include="src\day11.c" />
+    <ClCompile Include="src\day12.c" />
     <ClCompile Include="src\input.c" />
     <ClCompile Include="src\main.c" />
   </ItemGroup>
@@ -35,6 +37,7 @@
     <ClInclude Include="src\common\set.h" />
     <ClInclude Include="src\common\str.h" />
     <ClInclude Include="src\common\vec2.h" />
+    <ClInclude Include="src\common\vec3.h" />
     <ClInclude Include="src\common\vector.h" />
     <ClInclude Include="src\input.h" />
     <ClCompile Include="src\result.c" />

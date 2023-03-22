@@ -11,3 +11,4 @@
 #include "common/vector.h"
 #include "common/set.h"
 #include "common/vec2.h"
+#include "common/vec3.h"
