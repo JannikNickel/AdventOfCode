@@ -6,6 +6,7 @@
 
 typedef enum
 {
+	IC_NONE,
 	IC_END,
 	IC_INP_MISSING,
 	IC_INP_BREAK,
