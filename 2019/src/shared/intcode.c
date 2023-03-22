@@ -33,6 +33,11 @@ typedef struct
 	param_mode p2_mode;
 } instruction;
 
+static intcode_run_result intcode_run_result_new(intcode_res_type type, size_t inst_ptr, size_t rel_base)
+{
+	return (intcode_run_result) { .type = type, .inst_ptr = inst_ptr, .rel_base = rel_base };
+}
+
 static int inst_seg(int64_t code, int index)
 {
 	int size = (int)log10(code) + 1;
@@ -95,12 +100,11 @@ static int64_t addr(vector* code, size_t code_addr, size_t relative_base, param_
 
 intcode_run_result intcode_run(vector* code, vector* input, vector* output)
 {
-	return intcode_continue(code, input, output, 0, false, false);
+	return intcode_continue(code, input, output, 0, 0, false, false);
 }
 
-intcode_run_result intcode_continue(vector* code, vector* input, vector* output, size_t inst_ptr, bool break_inp, bool break_out)
+intcode_run_result intcode_continue(vector* code, vector* input, vector* output, size_t inst_ptr, size_t rel_base, bool break_inp, bool break_out)
 {
-	size_t relative_base = 0;
 	instruction inst;
 	while((inst = parse_inst(*(int64_t*)vector_at(code, inst_ptr))).op != OP_END)
 	{
@@ -111,9 +115,9 @@ intcode_run_result intcode_continue(vector* code, vector* input, vector* output,
 			case OP_LTN:
 			case OP_EQL:
 			{
-				int64_t lhs = param(code, inst_ptr + 1, relative_base, inst.p0_mode);
-				int64_t rhs = param(code, inst_ptr + 2, relative_base, inst.p1_mode);
-				int64_t res_addr = addr(code, inst_ptr + 3, relative_base, inst.p2_mode);
+				int64_t lhs = param(code, inst_ptr + 1, rel_base, inst.p0_mode);
+				int64_t rhs = param(code, inst_ptr + 2, rel_base, inst.p1_mode);
+				int64_t res_addr = addr(code, inst_ptr + 3, rel_base, inst.p2_mode);
 				int64_t res = 0;
 				switch(inst.op)
 				{
@@ -129,11 +133,11 @@ intcode_run_result intcode_continue(vector* code, vector* input, vector* output,
 			}
 			case OP_INP:
 			{
-				int64_t res_addr = addr(code, inst_ptr + 1, relative_base, inst.p0_mode);
+				int64_t res_addr = addr(code, inst_ptr + 1, rel_base, inst.p0_mode);
 				int64_t res = 0;
 				if(break_inp)
 				{
-					return (intcode_run_result) { .type = IC_INP_BREAK, .inst_ptr = inst_ptr };
+					return intcode_run_result_new(IC_INP_BREAK, inst_ptr, rel_base);
 				}
 				if(input != NULL)
 				{
@@ -144,7 +148,7 @@ intcode_run_result intcode_continue(vector* code, vector* input, vector* output,
 					}
 					else
 					{
-						return (intcode_run_result) { .type = IC_INP_MISSING, .inst_ptr = inst_ptr };
+						return intcode_run_result_new(IC_INP_MISSING, inst_ptr, rel_base);
 					}
 				}
 				vector_set(code, res_addr, &res, NULL);
@@ -156,22 +160,22 @@ intcode_run_result intcode_continue(vector* code, vector* input, vector* output,
 			{
 				if(output != NULL)
 				{
-					int64_t res = param(code, inst_ptr + 1, relative_base, inst.p0_mode);
+					int64_t res = param(code, inst_ptr + 1, rel_base, inst.p0_mode);
 					vector_push(output, &res);
 				}
 
 				inst_ptr += 2;
 				if(break_out)
 				{
-					return (intcode_run_result) { .type = IC_OUT_BREAK, .inst_ptr = inst_ptr };
+					return intcode_run_result_new(IC_OUT_BREAK, inst_ptr, rel_base);
 				}
 				break;
 			}
 			case OP_JIT:
 			case OP_JIF:
 			{
-				int64_t cond = param(code, inst_ptr + 1, relative_base, inst.p0_mode);
-				int64_t addr = param(code, inst_ptr + 2, relative_base, inst.p1_mode);
+				int64_t cond = param(code, inst_ptr + 1, rel_base, inst.p0_mode);
+				int64_t addr = param(code, inst_ptr + 2, rel_base, inst.p1_mode);
 				if(inst.op == OP_JIT ? cond : !cond)
 				{
 					inst_ptr = addr;
@@ -183,8 +187,8 @@ intcode_run_result intcode_continue(vector* code, vector* input, vector* output,
 			}
 			case OP_REL:
 			{
-				int64_t mod = param(code, inst_ptr + 1, relative_base, inst.p0_mode);
-				relative_base += mod;
+				int64_t mod = param(code, inst_ptr + 1, rel_base, inst.p0_mode);
+				rel_base += mod;
 
 				inst_ptr += 2;
 				break;
@@ -194,7 +198,7 @@ intcode_run_result intcode_continue(vector* code, vector* input, vector* output,
 				break;
 		}
 	}
-	return (intcode_run_result) { .type = IC_END, .inst_ptr = inst_ptr };
+	return intcode_run_result_new(IC_END, inst_ptr, rel_base);
 }
 
 vector intcode_run_simple(string code_str, int64_t* input, size_t input_len)

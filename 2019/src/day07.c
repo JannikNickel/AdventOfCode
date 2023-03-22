@@ -43,7 +43,7 @@ int64_t solve_amp(string code_str, int64_t phase[5])
 				vector_push(&in, &prev);
 				vector_clear(&output, NULL);
 
-				intcode_run_result res = intcode_continue(&amp_codes[i], &in, &output, amp_inst_ptrs[i], false, false);
+				intcode_run_result res = intcode_continue(&amp_codes[i], &in, &output, amp_inst_ptrs[i], 0, false, false);
 				amp_inst_ptrs[i] = res.inst_ptr;
 				prev = *(int64_t*)vector_last(&output);
 				if(i == 4 && res.type == IC_END)

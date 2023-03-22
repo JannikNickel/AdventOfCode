@@ -22,6 +22,11 @@ result result_string(const char* s)
 	return (result) { .data = data };
 }
 
+result result_heap_string(const char* s)
+{
+	return (result) { .data = s };
+}
+
 result result_int(int64_t v)
 {
 	char* data = malloc(sizeof(char) * (snprintf(NULL, 0, "%" PRId64, v) + 1));

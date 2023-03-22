@@ -12,6 +12,7 @@ result result_none();
 void result_delete(result res);
 
 result result_string(const char* s);
+result result_heap_string(const char* s);
 result result_int(int64_t v);
 result result_uint(uint64_t v);
 result result_float(double v);

@@ -51,7 +51,7 @@ result day08_part2(const input* input)
 		}
 	}
 	vector_delete(&layers, NULL);
-	return result_string(res);
+	return result_heap_string(res);
 }
 
 vector parse_input(const input* input)

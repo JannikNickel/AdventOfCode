@@ -19,6 +19,8 @@ typedef struct
 
 //New empty string (data on heap)
 string string_empty();
+//New whitespace string
+string string_whitespace(size_t len);
 //New string (data on heap) from c-string
 string string_from(const char* c_str);
 //New heap allocated string (data on heap) from c-string
@@ -37,6 +39,8 @@ void string_append_cstr(string* lhs, const char* rhs);
 
 //Get the char at 'index'
 char string_at(string s, size_t index);
+//Get the char ptr at 'index' to modify it
+char* string_at_ref(string s, size_t index);
 //Find the index of a char in a string beginning at index 'start'. Returns -1 (size_t max) if not found
 size_t string_find_char(string s, char c, size_t start);
 //Find the start index of a c-substring in a string beginning at index 'start'. Returns -1 (size_t max) if not found

@@ -36,6 +36,16 @@ string string_empty()
 	return string_from("");
 }
 
+string string_whitespace(size_t len)
+{
+	string s;
+	s.data = malloc(sizeof(char) * (len + 1));
+	memset(s.data, ' ', len);
+	s.data[len] = '\n';
+	s.length = len;
+	return s;
+}
+
 string string_from(const char* c_str)
 {
 	string s;
@@ -87,6 +97,11 @@ void string_append_cstr(string* lhs, const char* rhs)
 char string_at(string s, size_t index)
 {
 	return s.data[index];
+}
+
+char* string_at_ref(string s, size_t index)
+{
+	return &s.data[index];
 }
 
 size_t string_find_char(string s, char c, size_t start)
