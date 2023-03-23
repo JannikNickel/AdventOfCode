@@ -17,8 +17,8 @@ typedef struct
 
 typedef ingredient item;
 
-bool use(const set* recipes, set* inventory, item itm);
-bool refine(const set* recipes, set* inventory, item itm);
+static bool use(const set* recipes, set* inventory, item itm);
+static bool refine(const set* recipes, set* inventory, item itm);
 static size_t str_key_hash(const string* element);
 static bool str_key_equals(const string* a, const string* b);
 static void recipe_dealloc(recipe* recipe);
