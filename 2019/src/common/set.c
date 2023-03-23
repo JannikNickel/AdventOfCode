@@ -25,7 +25,7 @@ static size_t calc_hash(set* set, void* element)
 	return set->hash != NULL ? set->hash(element) : default_hash(element, set->element_size);
 }
 
-static size_t default_equality(void* a, void* b, size_t element_size)
+static bool default_equality(void* a, void* b, size_t element_size)
 {
 	return memcmp(a, b, element_size) == 0;
 }

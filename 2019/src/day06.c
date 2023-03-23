@@ -10,7 +10,7 @@ typedef struct
 static uint64_t count_orbit(const set* objects, const object* obj, uint32_t depth);
 static bool find_path(const set* objects, const string* from, const string* to, vector* path, uint32_t depth);
 static size_t object_hash(const object* element);
-static size_t object_equals(const object* a, const object* b);
+static bool object_equals(const object* a, const object* b);
 static void object_dealloc(object* obj);
 static set parse_input(const input* input);
 
@@ -119,7 +119,7 @@ size_t object_hash(const object* element)
 	return string_hash(element->id);
 }
 
-size_t object_equals(const object* a, const object* b)
+bool object_equals(const object* a, const object* b)
 {
 	return string_equals(a->id, b->id);
 }

@@ -8,6 +8,7 @@ static void copy_from_cstr(string* s, const char* c_str)
 	int len = strlen(c_str);
 	s->data = malloc(sizeof(char) * (len + 1));
 	memcpy(s->data, c_str, len + 1);
+	s->data[len] = '\0';
 	s->length = len;
 }
 
@@ -22,13 +23,13 @@ static void append_from_cstr(string* s, const char* c_str, size_t size)
 	free(old);
 }
 
-static string_pair split_pair(string s, size_t index)
+static string_pair split_pair(string s, size_t index, size_t off)
 {
 	if(index == (size_t)(-1))
 	{
 		return (string_pair) { .a = string_empty(), .b = string_empty() };
 	}
-	return (string_pair) { .a = string_sub(s, 0, index), .b = string_sub(s, index + 1, s.length - (index + 1)) };
+	return (string_pair) { .a = string_sub(s, 0, index), .b = string_sub(s, index + off, s.length - (index + 1)) };
 }
 
 string string_empty()
@@ -166,12 +167,12 @@ string string_replace(string s, const char* search, const char* replacement)
 
 string_pair string_split_char(string s, char c)
 {
-	return split_pair(s, string_find_char(s, c, 0));
+	return split_pair(s, string_find_char(s, c, 0), 1);
 }
 
 string_pair string_split_cstr(string s, const char* search)
 {
-	return split_pair(s, string_find_cstr(s, search, 0));
+	return split_pair(s, string_find_cstr(s, search, 0), strlen(search));
 }
 
 vector string_split_all_cstr(string s, const char* search)
