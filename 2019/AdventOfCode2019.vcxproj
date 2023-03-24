@@ -32,6 +32,7 @@
     <ClCompile Include="src\day13.c" />
     <ClCompile Include="src\day14.c" />
     <ClCompile Include="src\day15.c" />
+    <ClCompile Include="src\day16.c" />
     <ClCompile Include="src\input.c" />
     <ClCompile Include="src\main.c" />
   </ItemGroup>
