@@ -40,6 +40,8 @@ result day17_part1(const input* input);
 result day17_part2(const input* input);
 result day18_part1(const input* input);
 result day18_part2(const input* input);
+result day19_part1(const input* input);
+result day19_part2(const input* input);
 
 typedef result (*solution)(const input* input);
 static const solution SOLUTIONS[] =
@@ -79,7 +81,9 @@ static const solution SOLUTIONS[] =
 	day17_part1,
 	day17_part2,
 	day18_part1,
-	day18_part2
+	day18_part2,
+	day19_part1,
+	day19_part2
 };
 
 #define SOLUTION_COUNT sizeof(SOLUTIONS) / sizeof(SOLUTIONS[0]) / 2
