@@ -139,10 +139,22 @@ set set_create(size_t element_size, size_t bucket_count, float resize_factor, se
 
 void set_delete(set* set, set_element_dealloc dealloc)
 {
-	for(size_t i = 0; i < set->size; i++)
+	for(size_t i = 0; i < set->capacity; i++)
 	{
-		set_remove(set, set_at_index(set, 0), dealloc);
+		struct set_slot* slot = set->buckets[i];
+		while(slot != NULL)
+		{
+			struct set_slot* next = slot->next;
+			if(dealloc != NULL)
+			{
+				dealloc(slot->element);
+			}
+			free(slot->element);
+			free(slot);
+			slot = next;
+		}
 	}
+
 	free(set->buckets);
 	set->buckets = NULL;
 	set->capacity = 0;
