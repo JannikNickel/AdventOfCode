@@ -96,7 +96,7 @@ static void set_resize(set* set)
 {
 	size_t old_capacity = set->capacity;
 	size_t new_capacity = old_capacity * 2;
-	struct set_slot** old = set->buckets;
+	struct set_slot** old_buckets = set->buckets;
 
 	set->buckets = (struct set_slot**)calloc(new_capacity, sizeof(struct set_slot*));
 	set->capacity = new_capacity;
@@ -104,7 +104,7 @@ static void set_resize(set* set)
 
 	for(size_t i = 0; i < old_capacity; i++)
 	{
-		struct set_slot* slot = old[i];
+		struct set_slot* slot = old_buckets[i];
 		while(slot != NULL)
 		{
 			if(slot->element != NULL)
@@ -118,6 +118,7 @@ static void set_resize(set* set)
 			free(old);
 		}
 	}
+	free(old_buckets);
 }
 
 set set_create(size_t element_size, size_t bucket_count, float resize_factor, set_hash hash, set_equality equality)

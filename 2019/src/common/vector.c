@@ -86,6 +86,7 @@ void vector_set_capacity(vector* v, size_t capacity)
 	if(old != NULL)
 	{
 		memcpy(v->data, old, v->element_size * v->size);
+		free(old);
 	}
 }
 
