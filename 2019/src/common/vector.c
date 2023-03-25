@@ -266,13 +266,26 @@ void* vector_max(const vector* v, vector_element_ord ord)
 	return index != -1 ? vector_at(v, index) : NULL;
 }
 
-void vector_sort(const vector* v, vector_element_sort sort)
+void vector_sort(vector* v, vector_element_sort sort)
 {
 	if(v->size <= 1)
 	{
 		return;
 	}
 	qsort(v->data, v->size, v->element_size, sort);
+}
+
+void vector_reverse(vector* v)
+{
+	void* temp_mem = malloc(v->element_size);
+	for(size_t i = 0; i < v->size / 2; i++)
+	{
+		size_t other = v->size - i - 1;
+		memcpy(temp_mem, v->data + v->element_size * i, v->element_size);
+		memcpy(v->data + v->element_size * i, v->data + v->element_size * other, v->element_size);
+		memcpy(v->data + v->element_size * other, temp_mem, v->element_size);
+	}
+	free(temp_mem);
 }
 
 vector_iter vector_iterator(vector* v)

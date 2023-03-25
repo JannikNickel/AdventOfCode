@@ -78,7 +78,9 @@ void* vector_min(const vector* v, vector_element_ord ord);
 //Peek at the memory of the element with the max value by 'ord'
 void* vector_max(const vector* v, vector_element_ord ord);
 //Sort the vector in ascending order based on the 'sort' result
-void vector_sort(const vector* v, vector_element_sort sort);
+void vector_sort(vector* v, vector_element_sort sort);
+//Reverse the order of all elements in the vector
+void vector_reverse(vector* v);
 
 //Setup an iterator for the hashset. Use 'vec_iter_next' to get the next element in a loop
 vector_iter vector_iterator(vector* v);
