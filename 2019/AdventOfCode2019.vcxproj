@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="external\bigint\bigint.c" />
     <ClCompile Include="src\common\set.c" />
     <ClCompile Include="src\common\str.c" />
     <ClCompile Include="src\common\vec2.c" />
@@ -111,6 +112,7 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <CompileAs>CompileAsC</CompileAs>
+      <AdditionalIncludeDirectories>$(ProjectDir)external/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -128,6 +130,7 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <CompileAs>CompileAsC</CompileAs>
+      <AdditionalIncludeDirectories>$(ProjectDir)external/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
