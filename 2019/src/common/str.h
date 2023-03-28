@@ -23,6 +23,10 @@ string string_empty();
 string string_whitespace(size_t len);
 //New string (data on heap) from c-string
 string string_from(const char* c_str);
+//New string (data on heap) from a section of a c-string
+string string_from_sub(const char* c_str, size_t start, size_t length);
+//Wraps the c string as data into a new string instance
+string string_wrap(const char* c_str);
 //New heap allocated string (data on heap) from c-string
 string* string_new(const char* c_str);
 //New string with copied data from another string
@@ -36,6 +40,8 @@ void string_pair_delete(string_pair* pair);
 void string_append(string* lhs, const string rhs);
 //Append the rhs c-string to the lhs string ptr (modifies lhs)
 void string_append_cstr(string* lhs, const char* rhs);
+//Append the char to the lhs string ptr (modifies lhs)
+void string_append_char(string* lhs, char c);
 
 //Get the char at 'index'
 char string_at(string s, size_t index);
@@ -50,6 +56,8 @@ size_t string_find_cstr(string s, const char* search, size_t start);
 string string_sub(string s, size_t start, size_t length);
 //Replace all occurrences of a c-string with another c-string
 string string_replace(string s, const char* search, const char* replacement);
+//Trim all whitespaces from the beginning and end of the string and return a new string. Use 'whitespace_func' to determine which characters should be trimmed, otherwise NULL to trim spaces
+string string_trim(string s, bool (*whitespace_func)(char));
 
 //Split the string at the first occurrence of 'c'. Returns a pair of two empty strings if 'c' is not in 's'
 string_pair string_split_char(string s, char c);

@@ -17,7 +17,6 @@
     <ClCompile Include="src\common\vec2.c" />
     <ClCompile Include="src\common\vec3.c" />
     <ClCompile Include="src\common\vector.c" />
-    <ClCompile Include="src\day00.c" />
     <ClCompile Include="src\day01.c" />
     <ClCompile Include="src\day02.c" />
     <ClCompile Include="src\day03.c" />
@@ -42,6 +41,7 @@
     <ClCompile Include="src\day22.c" />
     <ClCompile Include="src\day23.c" />
     <ClCompile Include="src\day24.c" />
+    <ClCompile Include="src\day25.c" />
     <ClCompile Include="src\input.c" />
     <ClCompile Include="src\main.c" />
   </ItemGroup>

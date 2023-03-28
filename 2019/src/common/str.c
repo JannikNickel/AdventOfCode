@@ -3,9 +3,9 @@
 #include <stdlib.h>
 #include <ctype.h>
 
-static void copy_from_cstr(string* s, const char* c_str)
+static void copy_from_cstr(string* s, const char* c_str, size_t length)
 {
-	int len = strlen(c_str);
+	size_t len = length == (size_t)(-1) ? strlen(c_str) : length;
 	s->data = malloc(sizeof(char) * (len + 1));
 	memcpy(s->data, c_str, len + 1);
 	s->data[len] = '\0';
@@ -50,14 +50,28 @@ string string_whitespace(size_t len)
 string string_from(const char* c_str)
 {
 	string s;
-	copy_from_cstr(&s, c_str);
+	copy_from_cstr(&s, c_str, -1);
+	return s;
+}
+
+string string_from_sub(const char* c_str, size_t start, size_t length)
+{
+	string s;
+	copy_from_cstr(&s, c_str + start, length);
+}
+
+string string_wrap(const char* c_str)
+{
+	string s;
+	s.data = c_str;
+	s.length = strlen(c_str);
 	return s;
 }
 
 string* string_new(const char* c_str)
 {
 	string* s = malloc(sizeof(string));
-	copy_from_cstr(s, c_str);
+	copy_from_cstr(s, c_str, -1);
 	return s;
 }
 
@@ -93,6 +107,11 @@ void string_append(string* lhs, const string rhs)
 void string_append_cstr(string* lhs, const char* rhs)
 {
 	append_from_cstr(lhs, rhs, -1);
+}
+
+void string_append_char(string* lhs, char c)
+{
+	append_from_cstr(lhs, &c, 1);
 }
 
 char string_at(string s, size_t index)
@@ -163,6 +182,25 @@ string string_replace(string s, const char* search, const char* replacement)
 		append_from_cstr(&res, "", -1);
 	}
 	return res;
+}
+
+string string_trim(string s, bool (*whitespace_func)(char))
+{
+	if(whitespace_func == NULL)
+	{
+		whitespace_func = isspace;
+	}
+	size_t start = 0;
+	while(whitespace_func(s.data[start]))
+	{
+		start++;
+	}
+	size_t end = s.length - 1;
+	while(whitespace_func(s.data[end]) && end > start)
+	{
+		end--;
+	}
+	return start < end ? string_sub(s, start, end - start) : string_empty();
 }
 
 string_pair string_split_char(string s, char c)
