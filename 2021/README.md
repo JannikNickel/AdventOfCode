@@ -1,4 +1,4 @@
-# AdventOfCode2022
+# AdventOfCode2021
 My solutions for [Advent Of Code 2021](https://adventofcode.com/2021) in Rust 1.67.1 to complete all puzzles for 50 ⭐.
 
 ## Parameters

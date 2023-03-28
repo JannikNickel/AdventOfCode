@@ -1,4 +1,4 @@
-# AdventOfCode2022
+# AdventOfCode2020
 My solutions for [Advent Of Code 2020](https://adventofcode.com/2020) in C++20 to complete all puzzles for 50 ⭐.
 
 ## Arguments
