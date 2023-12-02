@@ -10,5 +10,5 @@ class Input:
         return self._raw
     
     @property
-    def lines(self) -> [str]:
+    def lines(self) -> list[str]:
         return self._lines
