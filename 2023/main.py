@@ -10,7 +10,8 @@ ANSI_ESC_CLOSE = "\033[0m"
 INPUT_PATH = "input"
 PUZZLES = [
     "Trebuchet?!",
-    "Cube Conundrum"
+    "Cube Conundrum",
+    "Gear Ratios"
 ]
 
 def main():
