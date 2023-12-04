@@ -11,7 +11,8 @@ INPUT_PATH = "input"
 PUZZLES = [
     "Trebuchet?!",
     "Cube Conundrum",
-    "Gear Ratios"
+    "Gear Ratios",
+    "Scratchcards"
 ]
 
 def main():
