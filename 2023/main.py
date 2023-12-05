@@ -12,7 +12,8 @@ PUZZLES = [
     "Trebuchet?!",
     "Cube Conundrum",
     "Gear Ratios",
-    "Scratchcards"
+    "Scratchcards",
+    "If You Give A Seed A Fertilizer"
 ]
 
 def main():
