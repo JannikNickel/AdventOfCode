@@ -11,19 +11,14 @@ def parse_input(input: Input) -> list[tuple[str, int]]:
 
 def hand_type(cards: str) -> int:
     counts = sorted(Counter(cards).values(), reverse=True)
-    if len(counts) == 1:
-        return 6
-    if len(counts) == 2 and (counts[0] == 4 or counts[1] == 4):
-        return 5
-    if len(counts) == 2 and (counts[0] == 3 or counts[1] == 3):
-        return 4
-    if len(counts) == 3 and (counts[0] == 3 or counts[1] == 3 or counts[2] == 3):
-        return 3
-    if len(counts) == 3 and (counts[0] == 2 or counts[1] == 2 or counts[2] == 2):
-        return 2
-    if len(counts) == 4:
-        return 1
-    return 0
+    match counts:
+        case [5]: return 6
+        case [4, 1]: return 5
+        case [3, 2]: return 4
+        case [3, 1, 1]: return 3
+        case [2, 2, 1]: return 2
+        case [2, 1, 1, 1]: return 1
+        case _: return 0
 
 def cmp_card_by_card(card_values: dict[str, int], a: str, b: str) -> int:
     for i in range(5):
