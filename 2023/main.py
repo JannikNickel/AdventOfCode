@@ -16,7 +16,8 @@ PUZZLES = [
     "If You Give A Seed A Fertilizer",
     "Wait For It",
     "Camel Cards",
-    "Haunted Wasteland"
+    "Haunted Wasteland",
+    "Mirage Maintenance"
 ]
 
 def main():
