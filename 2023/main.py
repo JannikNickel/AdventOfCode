@@ -17,7 +17,8 @@ PUZZLES = [
     "Wait For It",
     "Camel Cards",
     "Haunted Wasteland",
-    "Mirage Maintenance"
+    "Mirage Maintenance",
+    "Pipe Maze"
 ]
 
 def main():
