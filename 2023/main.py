@@ -19,7 +19,8 @@ PUZZLES = [
     "Haunted Wasteland",
     "Mirage Maintenance",
     "Pipe Maze",
-    "Cosmic Expansion"
+    "Cosmic Expansion",
+    "Hot Springs"
 ]
 
 def main():
