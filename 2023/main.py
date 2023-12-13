@@ -20,7 +20,8 @@ PUZZLES = [
     "Mirage Maintenance",
     "Pipe Maze",
     "Cosmic Expansion",
-    "Hot Springs"
+    "Hot Springs",
+    "Point of Incidence"
 ]
 
 def main():
