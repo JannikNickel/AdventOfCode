@@ -21,7 +21,8 @@ PUZZLES = [
     "Pipe Maze",
     "Cosmic Expansion",
     "Hot Springs",
-    "Point of Incidence"
+    "Point of Incidence",
+    "Parabolic Reflector Dish"
 ]
 
 def main():
