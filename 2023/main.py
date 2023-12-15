@@ -22,7 +22,8 @@ PUZZLES = [
     "Cosmic Expansion",
     "Hot Springs",
     "Point of Incidence",
-    "Parabolic Reflector Dish"
+    "Parabolic Reflector Dish",
+    "Lens Library"
 ]
 
 def main():
