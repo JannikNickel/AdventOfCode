@@ -23,7 +23,8 @@ PUZZLES = [
     "Hot Springs",
     "Point of Incidence",
     "Parabolic Reflector Dish",
-    "Lens Library"
+    "Lens Library",
+    "The Floor Will Be Lava"
 ]
 
 def main():
