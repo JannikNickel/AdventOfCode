@@ -24,7 +24,8 @@ PUZZLES = [
     "Point of Incidence",
     "Parabolic Reflector Dish",
     "Lens Library",
-    "The Floor Will Be Lava"
+    "The Floor Will Be Lava",
+    "Clumsy Crucible"
 ]
 
 def main():
