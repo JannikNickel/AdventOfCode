@@ -2,7 +2,7 @@ from input import Input
 from dataclasses import dataclass
 from heapq import heappush, heappop
 
-@dataclass(eq=True, order=True, frozen=True)
+@dataclass(eq = True, order = True, frozen = True)
 class State:
     pos: tuple[int, int]
     dir: tuple[int, int]
