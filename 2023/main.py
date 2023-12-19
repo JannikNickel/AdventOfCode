@@ -26,7 +26,8 @@ PUZZLES = [
     "Lens Library",
     "The Floor Will Be Lava",
     "Clumsy Crucible",
-    "Lavaduct Lagoon"
+    "Lavaduct Lagoon",
+    "Aplenty"
 ]
 
 def main():
