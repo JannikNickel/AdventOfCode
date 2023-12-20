@@ -27,7 +27,8 @@ PUZZLES = [
     "The Floor Will Be Lava",
     "Clumsy Crucible",
     "Lavaduct Lagoon",
-    "Aplenty"
+    "Aplenty",
+    "Pulse Propagation"
 ]
 
 def main():
