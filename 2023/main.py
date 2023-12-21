@@ -28,7 +28,8 @@ PUZZLES = [
     "Clumsy Crucible",
     "Lavaduct Lagoon",
     "Aplenty",
-    "Pulse Propagation"
+    "Pulse Propagation",
+    "Step Counter"
 ]
 
 def main():
