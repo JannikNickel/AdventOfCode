@@ -29,7 +29,8 @@ PUZZLES = [
     "Lavaduct Lagoon",
     "Aplenty",
     "Pulse Propagation",
-    "Step Counter"
+    "Step Counter",
+    "Sand Slabs"
 ]
 
 def main():
