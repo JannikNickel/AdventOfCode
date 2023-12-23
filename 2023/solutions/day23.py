@@ -3,7 +3,6 @@ from collections import defaultdict
 import re
 
 Pos = tuple[str, int]
-Edge = tuple[Pos, int]
 
 def parse_input(input: Input) -> tuple[list[str], Pos, Pos]:
     map = input.lines
@@ -47,7 +46,7 @@ def dfs_map(map: list[str], start: Pos, target: Pos, all_nodes: set[Pos]) -> int
                 open.append((pos, depth + 1))
     return None
 
-def get_nodes(map: list[str], start: Pos, end: Pos):
+def get_nodes(map: list[str], start: Pos, end: Pos) -> set[Pos]:
     nodes = set([start, end])
     for i, row in enumerate(map):
         for k, c in enumerate(row):
@@ -56,36 +55,37 @@ def get_nodes(map: list[str], start: Pos, end: Pos):
                 nodes.add((k, i))
     return nodes
 
-def find_edges(map: list[str], nodes: list[Pos]) -> list[Edge]:
-    all_nodes = set(nodes)
+def find_edges(map: list[str], nodes: set[Pos]) -> dict[Pos, tuple[Pos, int]]:
     edges = defaultdict(list)
     for node in nodes:
         for target in nodes:
             if node != target:
-                if found := dfs_map(map, node, target, all_nodes):
+                if found := dfs_map(map, node, target, nodes):
                     edges[node].append((target, found))
     return edges
 
-def dfs_graph(edges: list[Edge], start: Pos, target: Pos) -> int:
+def dfs_graph(edges: dict[Pos, tuple[Pos, int]], start: Pos, target: Pos) -> int:
+    bit_map = {k: i for i, k in enumerate(edges.keys())}
     best = 0
-    open = [(start, 0, set())]
+    open = [(start, 0, 0)]
     while len(open) > 0:
         curr, depth, closed = open.pop()
         if curr == target:
             best = max(best, depth)
             continue
 
-        if curr in closed:
+        bit_index = bit_map[curr]
+        if (closed & (1 << bit_index)) != 0:
             continue
-        closed.add(curr)
+        closed |= 1 << bit_index
 
         for n in edges[curr]:
-            open.append((n[0], depth + n[1], closed.copy()))
+            open.append((n[0], depth + n[1], closed))
     return best
 
-def find_longest_path(map: list[str], start: Pos, target: Pos):
+def find_longest_path(map: list[str], start: Pos, target: Pos) -> int:
     nodes = get_nodes(map, start, target)
-    edges = find_edges(map, nodes)    
+    edges = find_edges(map, nodes)
     return dfs_graph(edges, start, target)
 
 def solve_first(input: Input) -> object:
