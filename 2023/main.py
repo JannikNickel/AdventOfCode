@@ -30,7 +30,8 @@ PUZZLES = [
     "Aplenty",
     "Pulse Propagation",
     "Step Counter",
-    "Sand Slabs"
+    "Sand Slabs",
+    "A Long Walk"
 ]
 
 def main():
