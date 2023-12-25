@@ -32,7 +32,8 @@ PUZZLES = [
     "Step Counter",
     "Sand Slabs",
     "A Long Walk",
-    "Never Tell Me The Odds"
+    "Never Tell Me The Odds",
+    "Snowverload"
 ]
 
 def main():
