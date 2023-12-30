@@ -21,5 +21,5 @@ python input_dl.py --year {2019..2023} [--day {1..25}] [--update] [--session SES
 --session <SESSION> # Set the session cookie to log into the AOC website to download input
 ```
 
-> [!INFO]
+> [!NOTE]
 > Advent of Code puzzle inputs differ by user. To download the correct input, the user has to be logged into the AOC website. To do that, the application will use the session cookie from the browser. If the session cookie is missing, the application will prompt the user to input it with instructions on how to retrieve it.
