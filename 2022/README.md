@@ -12,7 +12,7 @@ If none or invalid parameters are used, the application will calculate the last 
 - Each puzzle is stored in a separate file which can be found with the links below
 - Part 1 and 2 are implemented in a single `Solution.cs` file to share code if possible
   - Each `Solution.cs` contains a `Solve1` method to solve the first part and `Solve2` for the second part
-- Inputs are stored in AdventOfCode2022/Input/ with the files named `01.txt, 02.txt, ...` for each puzzle
+- Inputs are stored in `AdventOfCode2022/Input/` with the files named `01.txt, 02.txt, ...` for each puzzle
   - The input is loaded into an `Input` class which can be accessed as a raw string or line array in each solution class
 
 ## Solutions
