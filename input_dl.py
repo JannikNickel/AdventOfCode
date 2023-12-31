@@ -17,7 +17,7 @@ PATHS = {
     2019: "2019/input/",
     2020: "2020/input/",
     2021: "2021/input/",
-    2022: "2022/AdventOfCode2022/Input/",
+    2022: "2022/input/",
     2023: "2023/input/"
 }
 
