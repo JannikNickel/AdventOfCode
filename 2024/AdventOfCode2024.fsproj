@@ -13,6 +13,7 @@
     <Compile Include="src\common.fs" />
     <Compile Include="src\input.fs" />
     <Compile Include="src\day01.fs" />
+    <Compile Include="src\day02.fs" />
     <Compile Include="src\solutions.fs" />
     <Compile Include="src\program.fs" />
   </ItemGroup>
