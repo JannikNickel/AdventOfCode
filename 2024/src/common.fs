@@ -19,6 +19,10 @@ module Parsing =
         let matches = Regex.Matches (str, @"-?\d+")
         [ for m in matches -> int m.Value ]
 
+    let matches (regex: string) (source: string) = 
+        let matches = Regex.Matches (source, regex)
+        [ for m in matches -> m.Value ]
+
     let map2d (mapping: char -> 'T) (lines: string list) : ((int * int) * 'T) seq = 
         seq {
             for x in 0 .. lines[0].Length - 1 do
