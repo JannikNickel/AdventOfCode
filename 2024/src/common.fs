@@ -12,6 +12,13 @@ module List =
         |> List.mapi (fun i _ -> i, list |> List.skip i |> List.truncate windowSize)
         |> List.filter (fun (_, wnd) -> wnd.Length = windowSize)
 
+module Map = 
+    let valueOrDefault key defaultValue = 
+        Map.tryFind key >> Option.defaultValue defaultValue
+
+module String = 
+    let ofList = Array.ofList >> System.String
+
 module Parsing = 
     open System.Text.RegularExpressions
 
