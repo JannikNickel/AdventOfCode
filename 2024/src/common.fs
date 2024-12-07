@@ -33,9 +33,11 @@ module String =
 module Parsing = 
     open System.Text.RegularExpressions
 
-    let ints (str: string) = 
+    let numbers (parse: string -> 'T) (str: string) = 
         let matches = Regex.Matches (str, @"-?\d+")
-        [ for m in matches -> int m.Value ]
+        [ for m in matches -> parse m.Value ]
+
+    let ints (str: string) = numbers int str
 
     let matches (regex: string) (source: string) = 
         let matches = Regex.Matches (source, regex)
