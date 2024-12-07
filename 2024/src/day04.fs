@@ -55,7 +55,7 @@ let solveFirst (input: Input) =
     |> Seq.sumBy (String.ofList >> (countSubstring "XMAS" 0))
 
 let solveSecond (input: Input) = 
-    let map = input.lines |> Parsing.map2d id |> Map.ofSeq
+    let map = input.lines |> Parsing.map2d id id |> Map.ofSeq
     map
     |> Map.filter (fun key _ -> isXmas key map)
     |> Map.count
