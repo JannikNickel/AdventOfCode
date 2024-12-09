@@ -27,6 +27,14 @@ module List =
 
     let pairs (list: 'a list) = List.allPairs list list
 
+    let alternate (list: 'a list) = 
+        let rec split odd even list = 
+            match list with
+            | a :: b :: tail -> split (a :: odd) (b :: even) tail
+            | a :: tail -> split (a :: odd) even tail
+            | [] -> List.rev odd, List.rev even
+        split [] [] list
+
 module Map = 
     let valueOrDefault key defaultValue = 
         Map.tryFind key >> Option.defaultValue defaultValue
