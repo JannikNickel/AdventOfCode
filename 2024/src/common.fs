@@ -7,11 +7,16 @@ with
     member inline this.y = match this with Vec2(_, y) -> y
 
     static member one = Vec2(1, 1)
-    static member ofTpl (tpl: int * int) = Vec2(fst tpl, snd tpl)
 
     static member inline (+) (v1: Vec2, v2: Vec2) = Vec2(v1.x + v2.x, v1.y + v2.y)
     static member inline (-) (v1: Vec2, v2: Vec2) = Vec2(v1.x - v2.x, v1.y - v2.y)
     static member inline (*) (v1: Vec2, s: int) = Vec2(v1.x * s, v1.y * s)
+
+module Vec2 = 
+    let ofTpl (tpl: int * int) = Vec2(fst tpl, snd tpl)
+
+    let inBounds (size: Vec2) (pos: Vec2) =
+        pos.x >= 0 && pos.y >= 0 && pos.x < size.x && pos.y < size.y
 
 module List = 
     let split (pred: 'a -> bool) (list: 'a list) = 
