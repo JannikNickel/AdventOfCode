@@ -7,6 +7,8 @@ with
     member inline this.y = match this with Vec2(_, y) -> y
 
     static member one = Vec2(1, 1)
+    static member left = Vec2(-1, 0)
+    static member right = Vec2(1, 0)
 
     static member inline (+) (v1: Vec2, v2: Vec2) = Vec2(v1.x + v2.x, v1.y + v2.y)
     static member inline (-) (v1: Vec2, v2: Vec2) = Vec2(v1.x - v2.x, v1.y - v2.y)
@@ -39,6 +41,12 @@ module List =
             | a :: tail -> split (a :: odd) even tail
             | [] -> List.rev odd, List.rev even
         split [] [] list
+
+    let fromTo start dest = 
+        if start < dest then
+            [ start .. dest ]
+        else
+            [ start .. -1 .. dest ]
 
 module Map = 
     let valueOrDefault key defaultValue = 
