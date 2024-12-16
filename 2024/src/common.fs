@@ -16,6 +16,8 @@ with
 
 module Vec2 = 
     let ofTpl (tpl: int * int) = Vec2(fst tpl, snd tpl)
+    let rotRight (dir: Vec2) = Vec2(dir.y, -dir.x)
+    let rotLeft (dir: Vec2) = Vec2(-dir.y, dir.x)
 
     let inBounds (size: Vec2) (pos: Vec2) =
         pos.x >= 0 && pos.y >= 0 && pos.x < size.x && pos.y < size.y
