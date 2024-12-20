@@ -13,11 +13,14 @@ with
     static member inline (+) (v1: Vec2, v2: Vec2) = Vec2(v1.x + v2.x, v1.y + v2.y)
     static member inline (-) (v1: Vec2, v2: Vec2) = Vec2(v1.x - v2.x, v1.y - v2.y)
     static member inline (*) (v1: Vec2, s: int) = Vec2(v1.x * s, v1.y * s)
+    static member inline (/) (v1: Vec2, s: int) = Vec2(v1.x / s, v1.y / s)
 
 module Vec2 = 
     let ofTpl (tpl: int * int) = Vec2(fst tpl, snd tpl)
     let rotRight (dir: Vec2) = Vec2(dir.y, -dir.x)
     let rotLeft (dir: Vec2) = Vec2(-dir.y, dir.x)
+    let mhDst (a: Vec2) (b: Vec2) = abs (b.x - a.x) + abs (b.y - a.y)
+    let normDir (a: Vec2) (b: Vec2) = (b - a) / (mhDst a b)
 
     let inBounds (size: Vec2) (pos: Vec2) =
         pos.x >= 0 && pos.y >= 0 && pos.x < size.x && pos.y < size.y
