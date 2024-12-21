@@ -53,6 +53,8 @@ module List =
         else
             [ start .. -1 .. dest ]
 
+    let range len = fromTo 0 (len - 1)
+
 module Map = 
     let valueOrDefault key defaultValue = 
         Map.tryFind key >> Option.defaultValue defaultValue

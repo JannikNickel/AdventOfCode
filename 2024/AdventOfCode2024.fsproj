@@ -32,6 +32,7 @@
     <Compile Include="src\day18.fs" />
     <Compile Include="src\day19.fs" />
     <Compile Include="src\day20.fs" />
+    <Compile Include="src\day21.fs" />
     <Compile Include="src\solutions.fs" />
     <Compile Include="src\program.fs" />
   </ItemGroup>
