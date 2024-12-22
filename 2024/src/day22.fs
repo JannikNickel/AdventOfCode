@@ -18,12 +18,16 @@ let findSecrets (iterations: int) (initial: uint64) =
     ) [initial]
     |> List.rev
 
+let packBytes (a: uint8) (b: uint8) (c: uint8) (d: uint8) = 
+    ((uint32 a) <<< 24) ||| ((uint32 b) <<< 16) ||| ((uint32 c) <<< 8) ||| (uint32 d)
+
 let allSeqs (prices: int list) = 
     prices
     |> List.windowed 5
     |> List.map (fun n -> 
-        let diffs = n |> List.windowed 2 |> List.map (function [a; b] -> b - a | _ -> 0)
-        diffs, n |> List.last
+        let diffs = n |> List.windowed 2 |> List.map (function [a; b] -> (b - a) |> uint8 | _ -> 0uy)
+        let diffPack = packBytes diffs[0] diffs[1] diffs[2] diffs[3]
+        diffPack, n |> List.last
     )
     |> List.distinctBy fst
 
