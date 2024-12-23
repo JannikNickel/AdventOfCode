@@ -64,11 +64,20 @@ module Program =
         stopwatch.Stop()
         (result, stopwatch.Elapsed.TotalMilliseconds)
 
+    let fmtResult (result: obj) = 
+        match result with
+        | :? int as v -> sprintf "%d" v
+        | :? uint as v -> sprintf "%u" v
+        | :? int64 as v -> sprintf "%d" v
+        | :? uint64 as v -> sprintf "%u" v
+        | :? string as v -> sprintf "%s" v
+        | _ as v -> sprintf "%A" v
+
     let solvePart (fn: Input -> obj) input part = 
         printfnc defColor "Solving part %d..." part
         let (result, duration) = fnTimed (fun () -> fn input)
         printfnc defColor "Solved Part %d (%.2fms)\nResult:" part duration
-        printfnc resColor "%A\n" result
+        printfnc resColor "%s\n" (fmtResult result)
 
     let runSolution day = 
         let input = Input.load (sprintf "./input/%02d.txt" day)
