@@ -62,6 +62,12 @@ def main():
         display_progress("Downloading input", p)
     print()
 
+    if any(n == DownloadResult.INVALID_SESSION for n in download_res.keys()):
+        print("Session token is invalid!")
+        update_session(session)
+        main()
+        return
+
     for r in download_res.keys():
         print(f"> {r.name.replace("_", " ").title()}: {download_res[r]}")
 
