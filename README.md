@@ -4,6 +4,7 @@ Solutions for [Advent of Code](https://adventofcode.com/).
 ## Progress
 | Year | Stars | Language |
 |------|-------|----------|
+| [2024](/2024) | 50 ⭐  | F#       |
 | [2023](/2023) | 50 ⭐  | Python   |
 | [2022](/2022) | 50 ⭐  | C#       |
 | [2021](/2021) | 50 ⭐  | Rust     |
@@ -13,7 +14,7 @@ Solutions for [Advent of Code](https://adventofcode.com/).
 ## Input downloading
 To download the puzzle inputs of an individual user, the `input_dl.py` script can be used. It is configured to work for all solutions and years in this repository.
 ```bash
-python input_dl.py --year {2019..2023} [--day {1..25}] [--update] [--session SESSION]
+python input_dl.py --year {2019..2024} [--day {1..25}] [--update] [--session SESSION]
 
 --year <YEAR>       # The year of the input to download.
 --day <DAY>         # The day of the input to download. Leave empty to download the whole year
