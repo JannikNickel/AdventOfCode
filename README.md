@@ -4,12 +4,13 @@ Solutions for [Advent of Code](https://adventofcode.com/).
 ## Progress
 | Year | Stars | Language |
 |------|-------|----------|
-| [2024](/2024) | 50 ⭐  | F#       |
-| [2023](/2023) | 50 ⭐  | Python   |
-| [2022](/2022) | 50 ⭐  | C#       |
-| [2021](/2021) | 50 ⭐  | Rust     |
-| [2020](/2020) | 50 ⭐  | C++      |
-| [2019](/2019) | 50 ⭐  | C        |
+| [2025](/2025) | In progress  | F#       |
+| [2024](/2024) | 50 / 50 ⭐  | F#       |
+| [2023](/2023) | 50 / 50 ⭐  | Python   |
+| [2022](/2022) | 50 / 50 ⭐  | C#       |
+| [2021](/2021) | 50 / 50 ⭐  | Rust     |
+| [2020](/2020) | 50 / 50 ⭐  | C++      |
+| [2019](/2019) | 50 / 50 ⭐  | C        |
 
 ## Input downloading
 To download the puzzle inputs of an individual user, the `input_dl.py` script can be used. It is configured to work for all solutions and years in this repository.
