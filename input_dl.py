@@ -19,7 +19,8 @@ PATHS = {
     2021: "2021/input/",
     2022: "2022/input/",
     2023: "2023/input/",
-    2024: "2024/input/"
+    2024: "2024/input/",
+    2025: "2025/input/",
 }
 
 ANSI_ESC_INFO = "\x1B[90m"
