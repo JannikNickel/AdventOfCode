@@ -9,6 +9,8 @@ with
     static member one = Vec2(1, 1)
     static member left = Vec2(-1, 0)
     static member right = Vec2(1, 0)
+    static member dirs = [ Vec2(-1, 0); Vec2(0, -1); Vec2(1, 0); Vec2(0, 1) ]
+    static member dirsDiag = [ Vec2(-1, -1); Vec2(1, -1); Vec2(1, 1); Vec2(-1, 1) ]
 
     static member inline (+) (v1: Vec2, v2: Vec2) = Vec2(v1.x + v2.x, v1.y + v2.y)
     static member inline (-) (v1: Vec2, v2: Vec2) = Vec2(v1.x - v2.x, v1.y - v2.y)
