@@ -71,6 +71,10 @@ module Parsing =
         let matches = Regex.Matches (str, @"-?\d+")
         [ for m in matches -> parse m.Value ]
 
+    let uNumbers (parse: string -> 'T) (str: string) = 
+        let matches = Regex.Matches (str, @"\d+")
+        [ for m in matches -> parse m.Value ]
+
     let ints (str: string) = numbers int str
 
     let matches (regex: string) (source: string) = 
