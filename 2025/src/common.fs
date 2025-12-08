@@ -27,6 +27,22 @@ module Vec2 =
     let inBounds (size: Vec2) (pos: Vec2) =
         pos.x >= 0 && pos.y >= 0 && pos.x < size.x && pos.y < size.y
 
+[<Struct>]
+type Vec3 = Vec3 of struct(int64 * int64 * int64)
+with
+    member inline this.x = match this with Vec3(x, _, _) -> x
+    member inline this.y = match this with Vec3(_, y, _) -> y
+    member inline this.z = match this with Vec3(_, _, z) -> z
+
+module Vec3 = 
+    let ofLst = function [ x; y; z ] -> Vec3(x, y, z) | _ -> failwith ""
+
+    let dst (a: Vec3) (b: Vec3) = 
+        let dx = b.x - a.x
+        let dy = b.y - a.y
+        let dz = b.z - a.z
+        sqrt (float (dx * dx + dy * dy + dz * dz))
+
 module List = 
     let split (pred: 'a -> bool) (list: 'a list) = 
         list
@@ -40,6 +56,11 @@ module List =
         |> List.filter (fun (_, wnd) -> wnd.Length = windowSize)
 
     let pairs (list: 'a list) = List.allPairs list list
+
+    let rec uniquePairs (list: 'a list) = 
+        match list with
+        | [] | [_] -> []
+        | head :: tail -> (tail |> List.map (fun n -> (head, n))) @ uniquePairs tail
 
     let alternate (list: 'a list) = 
         let rec split odd even list = 
