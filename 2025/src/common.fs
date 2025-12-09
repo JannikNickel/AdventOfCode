@@ -19,6 +19,7 @@ with
 
 module Vec2 = 
     let ofTpl (tpl: int * int) = Vec2(fst tpl, snd tpl)
+    let ofLst = function [ x; y ] -> Vec2(x, y) | _ -> failwith ""
     let rotRight (dir: Vec2) = Vec2(dir.y, -dir.x)
     let rotLeft (dir: Vec2) = Vec2(-dir.y, dir.x)
     let mhDst (a: Vec2) (b: Vec2) = abs (b.x - a.x) + abs (b.y - a.y)
