@@ -44,6 +44,31 @@ module Vec3 =
         let dz = b.z - a.z
         sqrt (float (dx * dx + dy * dy + dz * dz))
 
+type Queue<'a> = 
+    { Front: 'a list
+      Back: 'a list }
+
+module Queue = 
+    let empty = { Front = []; Back = [] }
+
+    let isEmpty (q: Queue<'a>) =
+        match q with
+        | { Front = []; Back = [] } -> true
+        | _ -> false
+
+    let enqueue (item: 'a) (q: Queue<'a>) = 
+        { q with Back = item :: q.Back }
+
+    let dequeue (q: Queue<'a>) = 
+        match q.Front, q.Back with
+        | [], [] -> None
+        | [], back -> 
+            match List.rev back with
+            | head :: tail -> Some (head, { Front = tail; Back = [] })
+            | [] -> None
+        | head :: tail, back -> 
+            Some (head, { Front = tail; Back = back })
+
 module List = 
     let split (pred: 'a -> bool) (list: 'a list) = 
         list
