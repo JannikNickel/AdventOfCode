@@ -48,14 +48,18 @@ let startMachine (machine: Machine) =
     
     bfs (Set.singleton 0) (Queue.enqueue (0, 0) Queue.empty)
 
-let rec distribute (buckets: int) (items: int) = 
+let rec distribute (limits: int list) (targetSum: int) = 
     seq {
-        if buckets = 1 then
-            yield [ items ]
-        else
-            for i in 0 .. items do
-                for prev in distribute (buckets - 1) (items - i) do
-                    yield i :: prev
+        match limits with
+        | [] ->
+            if targetSum = 0 then yield []
+        | [ last ] ->
+            if targetSum <= last then yield [ targetSum ]
+        | head :: tail ->
+            let limit = min head targetSum
+            for i in 0 .. limit do
+                for rest in distribute tail (targetSum - i) do
+                    yield i :: rest
     }
 
 let nextPresses (state: int array) (target: int array) (buttons: int list list) (pressAmounts: int list) = 
@@ -98,31 +102,33 @@ let rec findMinPresses (state: int array) (target: int array) (buttons: int list
             if List.isEmpty relevant then
                 None
             else
-                distribute (List.length relevant) pressAmounts
-                |> Seq.map (fun presses -> 
-                    match nextPresses state target relevant presses with
-                    | Some newState -> 
-                        match findMinPresses newState target remaining with
-                        | Some minPresses -> Some (minPresses + pressAmounts)
+                let pressLimits = relevant |> List.map (fun btn -> btn |> List.map (fun i -> target.[i] - state.[i]) |> List.min)
+                if List.sum pressLimits < pressAmounts then
+                    None
+                else
+                    distribute pressLimits pressAmounts
+                    |> Seq.map (fun presses -> 
+                        match nextPresses state target relevant presses with
+                        | Some newState -> 
+                            match findMinPresses newState target remaining with
+                            | Some minPresses -> Some (minPresses + pressAmounts)
+                            | _ -> None
                         | _ -> None
-                    | _ -> None
-                )
-                |> Seq.choose id
-                |> Seq.sort
-                |> Seq.tryHead
+                    )
+                    |> Seq.choose id
+                    |> Seq.sort
+                    |> Seq.tryHead
 
 let configureJoltage (machine: Machine) =
     let machineSize = List.length machine.Joltages
     let initialState = Array.zeroCreate machineSize
     let targetState = machine.Joltages |> List.toArray
-    let enabledButtons = machine.Buttons
-    findMinPresses initialState targetState enabledButtons
+    findMinPresses initialState targetState machine.Buttons
 
 let solveFirst (input: Input) = 
     input
     |> parseInput
-    |> List.map startMachine
-    |> List.sum
+    |> List.sumBy startMachine
 
 let solveSecond (input: Input) = 
     input
