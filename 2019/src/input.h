@@ -6,8 +6,8 @@
 
 typedef struct
 {
-	const string raw;
-	const vector lines;
+	string raw;
+	vector lines;
 } input;
 
 input* input_from_file(const char* path);

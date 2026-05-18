@@ -22,7 +22,7 @@ typedef struct
 
 typedef bool (*vector_pred)(size_t index, const void* element);
 typedef void (*vector_element_dealloc)(void* element);
-typedef void* (*vector_element_copy)(void* element);
+typedef void* (*vector_element_copy)(const void* element);
 typedef int64_t (*vector_element_ord)(const void* element);
 typedef int (*vector_element_sort)(const void* a, const void* b);
 
@@ -44,11 +44,13 @@ void vector_set_capacity(vector* v, size_t capacity);
 void vector_clear(vector* v, vector_element_dealloc dealloc);
 
 //Add an element to the end of the vector. The element is copied and should be of 'element_size'
-void vector_push(vector* v, void* element);
+void vector_push(vector* v, const void* element);
 //Set the 'index'-th element of the vector. The element is copied and should be of 'element_size'. (Optional) pass a function as 'dealloc' to run it before replacing the element
-void vector_set(vector* v, size_t index, void* element, vector_element_dealloc dealloc);
+void vector_set(vector* v, size_t index, const void* element, vector_element_dealloc dealloc);
 //Peek at the memory of the element at 'index'
 void* vector_at(vector* v, size_t index);
+//Peek at the memory of the element at 'index'
+const void* vector_at_c(const vector* v, size_t index);
 //Return a copy of the element at 'index'
 void* vector_at_cpy(const vector* v, size_t index);
 //Peek at the memory of the first element
@@ -64,7 +66,7 @@ void vector_remove_first(vector* v, vector_element_dealloc dealloc);
 //Remove the last element. (Optional) pass a function as 'dealloc' to run it for the removed element
 void vector_remove_last(vector* v, vector_element_dealloc dealloc);
 //Find the index of an element. Returns -1 (size_t max) if not found
-size_t vector_index_of(const vector* v, void* element);
+size_t vector_index_of(const vector* v, const void* element);
 //Find the index of an element by predicate. Returns -1 (size_t max) if not found
 size_t vector_index_of_pred(const vector* v, vector_pred predicate);
 //Test if all elements in the vector fulfill a condition
@@ -74,9 +76,9 @@ bool vector_any(const vector* v, vector_pred predicate);
 //Count the amount of elements that fulfill a condition
 size_t vector_count(const vector* v, vector_pred predicate);
 //Peek at the memory of the element with the min value by 'ord'
-void* vector_min(const vector* v, vector_element_ord ord);
+const void* vector_min(const vector* v, vector_element_ord ord);
 //Peek at the memory of the element with the max value by 'ord'
-void* vector_max(const vector* v, vector_element_ord ord);
+const void* vector_max(const vector* v, vector_element_ord ord);
 //Sort the vector in ascending order based on the 'sort' result
 void vector_sort(vector* v, vector_element_sort sort);
 //Reverse the order of all elements in the vector

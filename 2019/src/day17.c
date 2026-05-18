@@ -152,7 +152,7 @@ result day17_part2(const input* input)
 	int64_t res = *(int64_t*)vector_at(&output, output.size - 1);
 
 	vector_delete(&path, NULL);
-	string_delete(&code_str, NULL);
+	string_delete(&code_str);
 	vector_delete(&lines, vector_dealloc);
 	vector_delete(&in, NULL);
 	vector_delete(&output, NULL);

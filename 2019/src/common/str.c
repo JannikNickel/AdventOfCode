@@ -14,7 +14,7 @@ static void copy_from_cstr(string* s, const char* c_str, size_t length)
 
 static void append_from_cstr(string* s, const char* c_str, size_t size)
 {
-	int len = size == (size_t)(-1) ? strlen(c_str) : size;
+	size_t len = size == (size_t)(-1) ? strlen(c_str) : size;
 	char* old = s->data;
 	s->data = malloc(sizeof(char) * (s->length + len + 1));
 	memcpy(s->data, old, sizeof(char) * s->length);
@@ -58,9 +58,10 @@ string string_from_sub(const char* c_str, size_t start, size_t length)
 {
 	string s;
 	copy_from_cstr(&s, c_str + start, length);
+	return s;
 }
 
-string string_wrap(const char* c_str)
+string string_wrap(char* c_str)
 {
 	string s;
 	s.data = c_str;
@@ -184,19 +185,19 @@ string string_replace(string s, const char* search, const char* replacement)
 	return res;
 }
 
-string string_trim(string s, bool (*whitespace_func)(char))
+string string_trim(string s, int (*whitespace_func)(int))
 {
 	if(whitespace_func == NULL)
 	{
 		whitespace_func = isspace;
 	}
 	size_t start = 0;
-	while(whitespace_func(s.data[start]))
+	while(whitespace_func((unsigned char)s.data[start]))
 	{
 		start++;
 	}
 	size_t end = s.length - 1;
-	while(whitespace_func(s.data[end]) && end > start)
+	while(whitespace_func((unsigned char)s.data[end]) && end > start)
 	{
 		end--;
 	}
@@ -216,7 +217,7 @@ string_pair string_split_cstr(string s, const char* search)
 vector string_split_all_cstr(string s, const char* search)
 {
 	vector v = vector_create(sizeof(string));
-	int len = strlen(search);
+	size_t len = strlen(search);
 	if(len != 0 && s.length != 0)
 	{
 		size_t start = 0;

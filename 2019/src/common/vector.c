@@ -6,7 +6,7 @@ static void ensure_capacity(vector* v, size_t min_capacity)
 {
 	if(v->capacity < min_capacity)
 	{
-		vector_set_capacity(v, v->capacity * 2);
+		vector_set_capacity(v, max(v->capacity * 2, min_capacity));
 	}
 }
 
@@ -61,7 +61,7 @@ vector vector_clone(const vector* v, vector_element_copy copy)
 	{
 		for(size_t i = 0; i < v->size; i++)
 		{
-			void* cpy = copy(vector_at(v, i));
+			void* cpy = copy(vector_at_c(v, i));
 			vector_push(&new_vec, cpy);
 			free(cpy);
 		}
@@ -99,14 +99,14 @@ void vector_clear(vector* v, vector_element_dealloc dealloc)
 	v->size = 0;
 }
 
-void vector_push(vector* v, void* element)
+void vector_push(vector* v, const void* element)
 {
 	ensure_capacity(v, v->size + 1);
 	memcpy(v->data + v->size * v->element_size, element, v->element_size);
 	v->size++;
 }
 
-void vector_set(vector* v, size_t index, void* element, vector_element_dealloc dealloc)
+void vector_set(vector* v, size_t index, const void* element, vector_element_dealloc dealloc)
 {
 	void* prev = vector_at(v, index);
 	if(dealloc != NULL && prev != NULL)
@@ -117,6 +117,11 @@ void vector_set(vector* v, size_t index, void* element, vector_element_dealloc d
 }
 
 void* vector_at(vector* v, size_t index)
+{
+	return v->data + v->element_size * index;
+}
+
+const void* vector_at_c(const vector* v, size_t index)
 {
 	return v->data + v->element_size * index;
 }
@@ -173,7 +178,7 @@ void vector_remove_last(vector* v, vector_element_dealloc dealloc)
 	vector_remove_at(v, v->size - 1, dealloc);
 }
 
-size_t vector_index_of(const vector* v, void* element)
+size_t vector_index_of(const vector* v, const void* element)
 {
 	for(size_t i = 0; i < v->size; i++)
 	{
@@ -234,36 +239,36 @@ size_t vector_count(const vector* v, vector_pred predicate)
 	return c;
 }
 
-void* vector_min(const vector* v, vector_element_ord ord)
+const void* vector_min(const vector* v, vector_element_ord ord)
 {
 	int64_t min = INT64_MAX;
 	size_t index = -1;
 	for(size_t i = 0; i < v->size; i++)
 	{
-		int64_t o = ord(vector_at(v, i));
+		int64_t o = ord(vector_at_c(v, i));
 		if(o < min)
 		{
 			min = o;
 			index = i;
 		}
 	}
-	return index != -1 ? vector_at(v, index) : NULL;
+	return index != -1 ? vector_at_c(v, index) : NULL;
 }
 
-void* vector_max(const vector* v, vector_element_ord ord)
+const void* vector_max(const vector* v, vector_element_ord ord)
 {
 	int64_t max = INT64_MAX;
 	size_t index = -1;
 	for(size_t i = 0; i < v->size; i++)
 	{
-		int64_t o = ord(vector_at(v, i));
+		int64_t o = ord(vector_at_c(v, i));
 		if(o > max)
 		{
 			max = o;
 			index = i;
 		}
 	}
-	return index != -1 ? vector_at(v, index) : NULL;
+	return index != -1 ? vector_at_c(v, index) : NULL;
 }
 
 void vector_sort(vector* v, vector_element_sort sort)

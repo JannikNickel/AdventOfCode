@@ -47,7 +47,9 @@ bool set_contains(const set* set, void* element);
 //Remove 'element' from the set. Returns true if it was removed
 bool set_remove(set* set, void* element, set_element_dealloc dealloc);
 //Peek at the memory of the full element of a key. This can be used to make the set work as a hashmap. Returns NULL if not found
-void* set_at(set* set, void* element);
+void* set_at(set* set, const void* element);
+//Peek at the memory of the full element of a key. This can be used to make the set work as a hashmap. Returns NULL if not found
+const void* set_at_c(const set* set, const void* element);
 //Return a copy of the full element of a key. This can be used to make the set work as a hashmap. Returns NULL if not found
 void* set_at_cpy(const set* set, void* element);
 //Peek at the memory of the element at index. Iterating in a loop from '0' to 'set.size - 1' is safe, but using 'set_iterator' is faster

@@ -9,7 +9,7 @@ struct set_slot
 	struct set_slot* next;
 };
 
-static size_t default_hash(void* element, size_t element_size)
+static size_t default_hash(const void* element, size_t element_size)
 {
 	size_t h = 15127993;
 	for(size_t i = 0; i < element_size; i++)
@@ -20,17 +20,17 @@ static size_t default_hash(void* element, size_t element_size)
 	return h;
 }
 
-static size_t calc_hash(set* set, void* element)
+static size_t calc_hash(const set* set, const void* element)
 {
 	return set->hash != NULL ? set->hash(element) : default_hash(element, set->element_size);
 }
 
-static bool default_equality(void* a, void* b, size_t element_size)
+static bool default_equality(const void* a, const void* b, size_t element_size)
 {
 	return memcmp(a, b, element_size) == 0;
 }
 
-static size_t test_equality(set* set, void* a, void* b)
+static size_t test_equality(const set* set, const void* a, const void* b)
 {
 	return set->equality != NULL ? set->equality(a, b) : default_equality(a, b, set->element_size);
 }
@@ -40,7 +40,7 @@ static struct set_slot** get_bucket(set* set, size_t hash)
 	return &set->buckets[(hash & (set->capacity - 1))];
 }
 
-static struct set_slot* find_slot(set* set, void* element)
+static struct set_slot* find_slot(set* set, const void* element)
 {
 	size_t h = calc_hash(set, element);
 	struct set_slot* slot = *get_bucket(set, h);
@@ -177,7 +177,7 @@ bool set_insert(set* set, void* element)
 		return false;
 	}
 
-	float load_factor = set->size / (double)set->capacity;
+	double load_factor = set->size / (double)set->capacity;
 	if(load_factor > set->resize_factor)
 	{
 		set_resize(set);
@@ -187,9 +187,9 @@ bool set_insert(set* set, void* element)
 	return true;
 }
 
-bool set_contains(const set* set, void* element)
+bool set_contains(const set* s, void* element)
 {
-	return find_slot(set, element) != NULL;
+	return find_slot((set*)s, element) != NULL;
 }
 
 bool set_remove(set* set, void* element, set_element_dealloc dealloc)
@@ -224,7 +224,7 @@ bool set_remove(set* set, void* element, set_element_dealloc dealloc)
 	return false;
 }
 
-void* set_at(set* set, void* element)
+void* set_at(set* set, const void* element)
 {
 	struct set_slot* s = find_slot(set, element);
 	if(s != NULL)
@@ -234,13 +234,18 @@ void* set_at(set* set, void* element)
 	return NULL;
 }
 
-void* set_at_cpy(const set* set, void* element)
+const void* set_at_c(const set* s, const void* element)
 {
-	struct set_slot* s = find_slot(set, element);
-	if(s != NULL)
+	return set_at((set*)s, element);
+}
+
+void* set_at_cpy(const set* s, void* element)
+{
+	struct set_slot* slot = find_slot((set*)s, element);
+	if(slot != NULL)
 	{
-		void* data = malloc(set->element_size);
-		memcpy(data, s->element, set->element_size);
+		void* data = malloc(s->element_size);
+		memcpy(data, slot->element, s->element_size);
 		return data;
 	}
 	return NULL;

@@ -3,12 +3,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#include "input.h"
-#include "result.h"
+#include "common.h"
 #include "solutions.h"
 
 #define USE_PERF_COUNTER 1
-#if _WIN32 && USE_PERF_COUNTER
+#if defined(_WIN32) && USE_PERF_COUNTER
 #include <windows.h>
 #endif
 
@@ -31,7 +30,7 @@ int main(int argc, char* argv[])
 			int day = atoi(argv[2]);
 			if(day <= 0 || day > SOLUTION_COUNT)
 			{
-				printf("%sExpected number in range [1, %d] after day argument!%s", ANSI_ESC_ERROR, SOLUTION_COUNT, ANSI_ESC_CLOSE);
+				printf("%sExpected number in range [1, %lld] after day argument!%s", ANSI_ESC_ERROR, SOLUTION_COUNT, ANSI_ESC_CLOSE);
 				return 1;
 			}
 			vector_push(&solutions_to_run, &day);
@@ -94,7 +93,7 @@ void solve_part(const input* input, int day, int part)
 
 uint64_t nanoseconds()
 {
-	#ifdef _WIN32 && USE_PERF_COUNTER
+	#if defined(_WIN32) && USE_PERF_COUNTER
 	LARGE_INTEGER t;
 	QueryPerformanceCounter(&t);
 	return (uint64_t)t.QuadPart;
@@ -107,7 +106,7 @@ uint64_t nanoseconds()
 
 double time_diff(uint64_t start, uint64_t end)
 {
-	#ifdef _WIN32 && USE_PERF_COUNTER
+	#if defined(_WIN32) && USE_PERF_COUNTER
 	LARGE_INTEGER freq;
 	QueryPerformanceFrequency(&freq);
 	return (end - start) / (freq.QuadPart / 1000.0);
