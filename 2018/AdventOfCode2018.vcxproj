@@ -13,6 +13,7 @@
   <ItemGroup>
     <ClCompile Include="src\common.c" />
     <ClCompile Include="src\day01.c" />
+    <ClCompile Include="src\day02.c" />
     <ClCompile Include="src\main.c" />
   </ItemGroup>
   <ItemGroup>

@@ -21,8 +21,10 @@ input* input_from_file(const char* path)
 	string l = string_replace(raw, "\r\n", "\n");
 
 	input* in = malloc(sizeof(input));
-	*(string*)&in->raw = raw;
-	*(vector*)&in->lines = string_split_all_cstr(l, "\n");
+	in->raw = raw;
+	in->lines = string_split_all_cstr(l, "\n");
+	in->lines_c = (const string*)in->lines.data;
+	in->line_count = in->lines.size;
 
 	free(content);
 	string_delete(&l);
