@@ -43,7 +43,7 @@ void set_clear(set* set, set_element_dealloc dealloc);
 //Insert 'element' into the set if it's not already in the set. Returns true if it was added
 bool set_insert(set* set, void* element);
 //Return true if the set contains 'element'
-bool set_contains(const set* set, void* element);
+bool set_contains(const set* set, const void* element);
 //Remove 'element' from the set. Returns true if it was removed
 bool set_remove(set* set, void* element, set_element_dealloc dealloc);
 //Peek at the memory of the full element of a key. This can be used to make the set work as a hashmap. Returns NULL if not found

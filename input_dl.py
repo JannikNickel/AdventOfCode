@@ -14,6 +14,7 @@ AOC_DOMAIN = "adventofcode.com"
 AOC_SESSION_COOKIE_NAME = "session"
 
 PATHS = {
+    2018: "2018/input/",
     2019: "2019/input/",
     2020: "2020/input/",
     2021: "2021/input/",

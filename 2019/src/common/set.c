@@ -30,14 +30,14 @@ static bool default_equality(const void* a, const void* b, size_t element_size)
 	return memcmp(a, b, element_size) == 0;
 }
 
-static size_t test_equality(const set* set, const void* a, const void* b)
+static bool test_equality(const set* set, const void* a, const void* b)
 {
 	return set->equality != NULL ? set->equality(a, b) : default_equality(a, b, set->element_size);
 }
 
 static struct set_slot** get_bucket(set* set, size_t hash)
 {
-	return &set->buckets[(hash & (set->capacity - 1))];
+	return &set->buckets[(hash % set->capacity)];
 }
 
 static struct set_slot* find_slot(set* set, const void* element)
@@ -164,7 +164,7 @@ void set_delete(set* set, set_element_dealloc dealloc)
 
 void set_clear(set* set, set_element_dealloc dealloc)
 {
-	for(size_t i = 0; i < set->size; i++)
+	while(set->size > 0)
 	{
 		set_remove(set, set_at_index(set, 0), dealloc);
 	}
@@ -187,7 +187,7 @@ bool set_insert(set* set, void* element)
 	return true;
 }
 
-bool set_contains(const set* s, void* element)
+bool set_contains(const set* s, const void* element)
 {
 	return find_slot((set*)s, element) != NULL;
 }
