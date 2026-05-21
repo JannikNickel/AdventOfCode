@@ -6,7 +6,7 @@ static void ensure_capacity(vector* v, size_t min_capacity)
 {
 	if(v->capacity < min_capacity)
 	{
-		vector_set_capacity(v, max(v->capacity * 2, min_capacity));
+		vector_set_capacity(v, (v->capacity * 2) > min_capacity ? (v->capacity * 2) : min_capacity);
 	}
 }
 
