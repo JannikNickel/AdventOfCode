@@ -20,7 +20,7 @@ typedef struct
 	size_t index;
 } vector_iter;
 
-typedef bool (*vector_pred)(size_t index, const void* element);
+typedef bool (*vector_pred)(size_t index, const void* element, const void* ctx);
 typedef void (*vector_element_dealloc)(void* element);
 typedef void* (*vector_element_copy)(const void* element);
 typedef int64_t (*vector_element_ord)(const void* element);
@@ -68,13 +68,15 @@ void vector_remove_last(vector* v, vector_element_dealloc dealloc);
 //Find the index of an element. Returns -1 (size_t max) if not found
 size_t vector_index_of(const vector* v, const void* element);
 //Find the index of an element by predicate. Returns -1 (size_t max) if not found
-size_t vector_index_of_pred(const vector* v, vector_pred predicate);
+size_t vector_index_of_pred(const vector* v, vector_pred predicate, const void* ctx);
+//Find an element by predicate. Returns NULL if not found
+void* vector_find(const vector* v, vector_pred predicate, const void* ctx);
 //Test if all elements in the vector fulfill a condition
-bool vector_all(const vector* v, vector_pred predicate);
+bool vector_all(const vector* v, vector_pred predicate, const void* ctx);
 //Test if all elements in the vector fulfill a condition
-bool vector_any(const vector* v, vector_pred predicate);
+bool vector_any(const vector* v, vector_pred predicate, const void* ctx);
 //Count the amount of elements that fulfill a condition
-size_t vector_count(const vector* v, vector_pred predicate);
+size_t vector_count(const vector* v, vector_pred predicate, const void* ctx);
 //Peek at the memory of the element with the min value by 'ord'
 const void* vector_min(const vector* v, vector_element_ord ord);
 //Peek at the memory of the element with the max value by 'ord'

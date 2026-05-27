@@ -190,11 +190,11 @@ size_t vector_index_of(const vector* v, const void* element)
 	return -1;
 }
 
-size_t vector_index_of_pred(const vector* v, vector_pred predicate)
+size_t vector_index_of_pred(const vector* v, vector_pred predicate, const void* ctx)
 {
 	for(size_t i = 0; i < v->size; i++)
 	{
-		if(predicate(i, v->data + i * v->element_size))
+		if(predicate(i, v->data + i * v->element_size, ctx))
 		{
 			return i;
 		}
@@ -202,11 +202,23 @@ size_t vector_index_of_pred(const vector* v, vector_pred predicate)
 	return -1;
 }
 
-bool vector_all(const vector* v, vector_pred predicate)
+void* vector_find(const vector* v, vector_pred predicate, const void* ctx)
 {
 	for(size_t i = 0; i < v->size; i++)
 	{
-		if(!predicate(i, v->data + i * v->element_size))
+		if(predicate(i, v->data + i * v->element_size, ctx))
+		{
+			return v->data + i * v->element_size;
+		}
+	}
+	return NULL;
+}
+
+bool vector_all(const vector* v, vector_pred predicate, const void* ctx)
+{
+	for(size_t i = 0; i < v->size; i++)
+	{
+		if(!predicate(i, v->data + i * v->element_size, ctx))
 		{
 			return false;
 		}
@@ -214,11 +226,11 @@ bool vector_all(const vector* v, vector_pred predicate)
 	return true;
 }
 
-bool vector_any(const vector* v, vector_pred predicate)
+bool vector_any(const vector* v, vector_pred predicate, const void* ctx)
 {
 	for(size_t i = 0; i < v->size; i++)
 	{
-		if(predicate(i, v->data + i * v->element_size))
+		if(predicate(i, v->data + i * v->element_size, ctx))
 		{
 			return true;
 		}
@@ -226,12 +238,12 @@ bool vector_any(const vector* v, vector_pred predicate)
 	return false;
 }
 
-size_t vector_count(const vector* v, vector_pred predicate)
+size_t vector_count(const vector* v, vector_pred predicate, const void* ctx)
 {
 	size_t c = 0;
 	for(size_t i = 0; i < v->size; i++)
 	{
-		if(predicate(i, v->data + i * v->element_size))
+		if(predicate(i, v->data + i * v->element_size, ctx))
 		{
 			c++;
 		}
@@ -257,7 +269,7 @@ const void* vector_min(const vector* v, vector_element_ord ord)
 
 const void* vector_max(const vector* v, vector_element_ord ord)
 {
-	int64_t max = INT64_MAX;
+	int64_t max = INT64_MIN;
 	size_t index = -1;
 	for(size_t i = 0; i < v->size; i++)
 	{
