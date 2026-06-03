@@ -107,7 +107,7 @@ vector parse_input(const input* input, vec2* _min, vec2* _max)
 	for(size_t i = 0; i < input->line_count; i++)
 	{
 		vec2 point;
-		sscanf(input->lines_c[i].data, "%d, %d", &point.x, &point.y);
+		sscanf(input->lines_c[i].data, SFMT_INT32_T "," SFMT_INT32_T, &point.x, &point.y);
 		vector_push(&points, &point);
 		_min->x = min(_min->x, point.x);
 		_min->y = min(_min->y, point.y);

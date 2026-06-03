@@ -27,7 +27,7 @@ size_t solve(const input* input, uint64_t multiplier)
 {
 	size_t players = 0;
 	uint64_t last_marble = 0;
-	sscanf(input->raw.data, "%zu players; last marble is worth %llu points", &players, &last_marble);
+	sscanf(input->raw.data, "%zu players; last marble is worth " SFMT_UINT64_T " points", &players, &last_marble);
 	last_marble *= multiplier;
 
 	marble* marble_pool = malloc(sizeof(marble) * (last_marble + 1));
