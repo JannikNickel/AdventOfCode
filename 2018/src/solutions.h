@@ -23,6 +23,8 @@ result day09_part1(const input* input);
 result day09_part2(const input* input);
 result day10_part1(const input* input);
 result day10_part2(const input* input);
+result day11_part1(const input* input);
+result day11_part2(const input* input);
 
 typedef result (*solution)(const input* input);
 static const solution SOLUTIONS[] =
@@ -47,6 +49,8 @@ static const solution SOLUTIONS[] =
 	day09_part2,
 	day10_part1,
 	day10_part2,
+	day11_part1,
+	day11_part2,
 };
 
 #define SOLUTION_COUNT sizeof(SOLUTIONS) / sizeof(SOLUTIONS[0]) / 2
@@ -64,6 +68,7 @@ static const char* PUZZLE_NAMES[] =
 	"Memory Maneuver",
 	"Marble Mania",
 	"The Stars Align",
+	"Chronal Charge"
 };
 
 #endif

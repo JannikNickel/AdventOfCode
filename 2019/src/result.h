@@ -16,6 +16,7 @@ result result_heap_string(char* s);
 result result_int(int64_t v);
 result result_uint(uint64_t v);
 result result_float(double v);
+result result_fmt(const char* fmt, ...);
 
 void result_print(result res);
 

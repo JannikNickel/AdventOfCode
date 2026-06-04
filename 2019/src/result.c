@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <inttypes.h>
+#include <stdarg.h>
 
 result result_none()
 {
@@ -48,6 +49,28 @@ result result_float(double v)
 	int size = snprintf(NULL, 0, "%f", v) + 1;
 	char* data = malloc(size);
 	snprintf(data, size, "%f", v);
+	return (result) { .data = data };
+}
+
+result result_fmt(const char* fmt, ...)
+{
+	va_list args;
+	va_start(args, fmt);
+
+	va_list args_copy;
+	va_copy(args_copy, args);
+	int size = vsnprintf(NULL, 0, fmt, args_copy);
+	va_end(args_copy);
+	if(size < 0)
+	{
+		va_end(args);
+		return (result) { .data = NULL };
+	}
+
+	char* data = malloc(size + 1);
+	vsnprintf(data, size + 1, fmt, args);
+	va_end(args);
+
 	return (result) { .data = data };
 }
 
