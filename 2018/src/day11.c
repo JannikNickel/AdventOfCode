@@ -40,12 +40,14 @@ result day11_part2(const input* input)
 {
 	int64_t serial_number = strtoll(input->lines_c[0].data, NULL, 10);
 
-	int64_t* cache = malloc(GRID_SIZE * GRID_SIZE * sizeof(int64_t));
-	for(size_t y = 0; y < GRID_SIZE; y++)
+	size_t stride = GRID_SIZE + 1;
+	int64_t* sat = calloc(stride * stride, sizeof(int64_t));
+	for(size_t y = 1; y <= GRID_SIZE; y++)
 	{
-		for(size_t x = 0; x < GRID_SIZE; x++)
+		for(size_t x = 1; x <= GRID_SIZE; x++)
 		{
-			cache[y * GRID_SIZE + x] = power_level(serial_number, x + 1, y + 1);
+			size_t power = power_level(serial_number, x, y);
+			sat[y * stride + x] = power + sat[(y - 1) * stride + x] + sat[y * stride + (x - 1)] - sat[(y - 1) * stride + (x - 1)];
 		}
 	}
 
@@ -59,17 +61,13 @@ result day11_part2(const input* input)
 			size_t remaining_x = GRID_SIZE - x + 1;
 			size_t remaining_y = GRID_SIZE - y + 1;
 			size_t max_square_size = remaining_x < remaining_y ? remaining_x : remaining_y;
-			int64_t total_power = 0;
 			for(size_t i = 0; i < max_square_size; i++)
 			{
-				for(size_t y_off = 0; y_off <= i; y_off++)
-				{
-					total_power += cache[(y + y_off - 1) * GRID_SIZE + (x + i - 1)];
-				}
-				for(size_t x_off = 0; x_off < i; x_off++)
-				{
-					total_power += cache[(y + i - 1) * GRID_SIZE + (x + x_off - 1)];
-				}
+				size_t x0 = x - 1;
+				size_t y0 = y - 1;
+				size_t x1 = x + i;
+				size_t y1 = y + i;
+				int64_t total_power = sat[y1 * stride + x1] - sat[y0 * stride + x1] - sat[y1 * stride + x0] + sat[y0 * stride + x0];
 				if(total_power > max_power)
 				{
 					max_power = total_power;
@@ -81,7 +79,7 @@ result day11_part2(const input* input)
 		}
 	}
 
-	free(cache);
+	free(sat);
 	return result_fmt("%zu,%zu,%zu", max_power_x, max_power_y, max_power_size);
 }
 
