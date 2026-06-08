@@ -1,13 +1,20 @@
 #include "solutions.h"
 #include "common.h"
 
-static const size_t SLOT_COUNT = 1000;
+typedef struct
+{
+	char* gen;
+	char* prev_gen;
+	size_t size;
+	size_t zero_idx;
+} slots_t;
 
 static int64_t solve(const input* input, uint64_t generations);
-static void simulate_gen(char* slots, char* prev_gen, size_t slot_count, char rules[32]);
-static int64_t count_plants(const char* slots, size_t slot_count, size_t zero_idx);
+static void simulate_gen(slots_t* slots, char rules[32]);
+static void add_padding(slots_t* slots);
+static int64_t count_plants(const slots_t* slots);
 static uint8_t rule_id(const char* pattern);
-static void parse_input(const input* input, char* slots, char rules[32], size_t zero_idx);
+static slots_t parse_input(const input* input, char rules[32]);
 
 result day12_part1(const input* input)
 {
@@ -23,21 +30,18 @@ int64_t solve(const input* input, uint64_t generations)
 {
 	char rules[32] = { 0 };
 	memset(rules, '.', sizeof(char) * 32);
-
-	size_t zero_idx = SLOT_COUNT / 2;
-	char* slots = malloc(sizeof(char) * SLOT_COUNT);
-	char* prev_gen = malloc(sizeof(char) * SLOT_COUNT);
-	parse_input(input, slots, rules, zero_idx);
+	slots_t slots = parse_input(input, rules);
 
 	int64_t result = 0;
 	int stable_count = 0;
 	int64_t prev_diff = 0;
-	int64_t prev_sum = count_plants(slots, SLOT_COUNT, zero_idx);
+	int64_t prev_sum = count_plants(&slots);
 	for(uint64_t i = 0;i < generations; i++)
 	{
-		simulate_gen(slots, prev_gen, SLOT_COUNT, rules);
+		add_padding(&slots);
+		simulate_gen(&slots, rules);
 
-		int64_t sum = count_plants(slots, SLOT_COUNT, zero_idx);
+		int64_t sum = count_plants(&slots);
 		int64_t diff = sum - prev_sum;
 		prev_sum = sum;
 
@@ -58,28 +62,65 @@ int64_t solve(const input* input, uint64_t generations)
 		prev_diff = diff;
 	}
 
-	free(slots);
-	free(prev_gen);
+	free(slots.gen);
+	free(slots.prev_gen);
 	return result;
 }
 
-void simulate_gen(char* slots, char* prev_gen, size_t slot_count, char rules[32])
+void simulate_gen(slots_t* slots, char rules[32])
 {
-	memcpy(prev_gen, slots, sizeof(char) * slot_count);
-	memset(slots, '.', sizeof(char) * slot_count);
-	for(size_t i = 0; i < slot_count - 4; i++)
+	memcpy(slots->prev_gen, slots->gen, sizeof(char) * slots->size);
+	memset(slots->gen, '.', sizeof(char) * slots->size);
+	for(size_t i = 0; i < slots->size - 4; i++)
 	{
-		uint8_t pattern_id = rule_id(&prev_gen[i]);
-		slots[i + 2] = rules[pattern_id];
+		uint8_t pattern_id = rule_id(&slots->prev_gen[i]);
+		slots->gen[i + 2] = rules[pattern_id];
 	}
 }
 
-int64_t count_plants(const char* slots, size_t slot_count, size_t zero_idx)
+void add_padding(slots_t* slots)
+{
+	size_t left_idx = SIZE_MAX, right_idx = 0;
+	for(size_t i = 0; i < slots->size; i++)
+	{
+		if(slots->gen[i] == '#')
+		{
+			if(left_idx == SIZE_MAX)
+			{
+				left_idx = i;
+			}
+			right_idx = i;
+		}
+	}
+
+	if(left_idx != SIZE_MAX)
+	{
+		const size_t min_padding = 5 * 10;
+		size_t right_inc = right_idx + min_padding >= slots->size ? right_idx + min_padding - slots->size + 1 : 0;
+		size_t left_inc = left_idx < min_padding ? min_padding - left_idx : 0;
+		size_t new_size = slots->size + left_inc + right_inc;
+		if(new_size > slots->size)
+		{
+			char* new_gen = malloc(sizeof(char) * new_size);
+			char* new_prev_gen = malloc(sizeof(char) * new_size);
+			memset(new_gen, '.', sizeof(char) * new_size);
+			memcpy(new_gen + left_inc, slots->gen, sizeof(char) * slots->size);
+			free(slots->gen);
+			free(slots->prev_gen);
+			slots->gen = new_gen;
+			slots->prev_gen = new_prev_gen;
+			slots->size = new_size;
+			slots->zero_idx += left_inc;
+		}
+	}
+}
+
+int64_t count_plants(const slots_t* slots)
 {
 	int64_t sum = 0;
-	for(size_t i = 0; i < slot_count; i++)
+	for(size_t i = 0; i < slots->size; i++)
 	{
-		sum += slots[i] == '#' ? ((int64_t)i - (int64_t)zero_idx) : 0;
+		sum += slots->gen[i] == '#' ? ((int64_t)i - (int64_t)slots->zero_idx) : 0;
 	}
 	return sum;
 }
@@ -95,16 +136,25 @@ uint8_t rule_id(const char* pattern)
 	return id;
 }
 
-void parse_input(const input* input, char* slots, char rules[32], size_t zero_idx)
+slots_t parse_input(const input* input, char rules[32])
 {
 	const char* initial_state = input->lines_c[0].data + strlen("initial state: ");
 	size_t initial_slot_count = strlen(initial_state);
-	memset(slots, '.', sizeof(char) * SLOT_COUNT);
-	memcpy(slots + zero_idx, initial_state, initial_slot_count);
+
+	slots_t slots = { 0 };
+	slots.size = initial_slot_count;
+	slots.zero_idx = 0;
+	slots.gen = malloc(sizeof(char) * initial_slot_count);
+	slots.prev_gen = malloc(sizeof(char) * initial_slot_count);
+
+	memset(slots.gen, '.', sizeof(char) * initial_slot_count);
+	memcpy(slots.gen + slots.zero_idx, initial_state, initial_slot_count);
 
 	for(size_t i = 2; i < input->line_count; i++)
 	{
 		const char* line = input->lines_c[i].data;
 		rules[rule_id(line)] = line[9];
 	}
+
+	return slots;
 }
