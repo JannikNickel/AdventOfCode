@@ -53,6 +53,8 @@ void simulate_water(map* map, vec2 pos)
 {
 	vector stack = vector_create(sizeof(vec2));
 	vector_push(&stack, &pos);
+	set visited_origins = set_create(sizeof(vec2), 128, 0.75f, NULL, NULL);
+	set_insert(&visited_origins, &pos);
 
 	while(stack.size > 0)
 	{
@@ -90,19 +92,27 @@ void simulate_water(map* map, vec2 pos)
 				{
 					set_insert(&map->flowing_water, &(vec2){.x = i, .y = curr.y });
 				}
-				if(!left_blocked)
+
+				vec2 left_origin = (vec2){ .x = left_end, .y = curr.y };
+				if(!left_blocked && !set_contains(&visited_origins, &left_origin))
 				{
-					vector_push(&stack, &(vec2){.x = left_end, .y = curr.y });
+					vector_push(&stack, &left_origin);
+					set_insert(&visited_origins, &left_origin);
 				}
-				if(!right_blocked)
+
+				vec2 right_origin = (vec2){ .x = right_end, .y = curr.y };
+				if(!right_blocked && !set_contains(&visited_origins, &right_origin))
 				{
-					vector_push(&stack, &(vec2){.x = right_end, .y = curr.y });
+					vector_push(&stack, &right_origin);
+					set_insert(&visited_origins, &right_origin);
 				}
 				break;
 			}
 		}
 	}
+
 	vector_delete(&stack, NULL);
+	set_delete(&visited_origins, NULL);
 }
 
 bool scan_dir(const map* map, vec2 pos, int32_t dir, int32_t* end_pos)
