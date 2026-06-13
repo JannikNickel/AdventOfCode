@@ -58,7 +58,7 @@ static struct set_slot* find_slot(set* set, const void* element)
 	return NULL;
 }
 
-static void insert_back_of_slot(struct set_slot* slot, void* element, size_t hash, size_t element_size)
+static void insert_back_of_slot(struct set_slot* slot, const void* element, size_t hash, size_t element_size)
 {
 	while(slot->next != NULL)
 	{
@@ -72,7 +72,7 @@ static void insert_back_of_slot(struct set_slot* slot, void* element, size_t has
 	slot->next = s;
 }
 
-static void insert_internal(set* set, void* element)
+static void insert_internal(set* set, const void* element)
 {
 	size_t h = calc_hash(set, element);
 	struct set_slot** slot_ptr = get_bucket(set, h);
@@ -170,7 +170,7 @@ void set_clear(set* set, set_element_dealloc dealloc)
 	}
 }
 
-bool set_insert(set* set, void* element)
+bool set_insert(set* set, const void* element)
 {
 	if(set_contains(set, element))
 	{

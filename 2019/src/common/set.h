@@ -41,7 +41,7 @@ void set_delete(set* set, set_element_dealloc dealloc);
 void set_clear(set* set, set_element_dealloc dealloc);
 
 //Insert 'element' into the set if it's not already in the set. Returns true if it was added
-bool set_insert(set* set, void* element);
+bool set_insert(set* set, const void* element);
 //Return true if the set contains 'element'
 bool set_contains(const set* set, const void* element);
 //Remove 'element' from the set. Returns true if it was removed
