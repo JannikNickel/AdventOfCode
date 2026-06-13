@@ -32,9 +32,11 @@
     <ClCompile Include="src\day18.c" />
     <ClCompile Include="src\day19.c" />
     <ClCompile Include="src\day20.c" />
+    <ClCompile Include="src\day21.c" />
     <ClCompile Include="src\main.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\chronal_device.h" />
     <ClInclude Include="src\solutions.h" />
     <ClInclude Include="src\common.h" />
   </ItemGroup>
