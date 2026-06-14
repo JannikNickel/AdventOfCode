@@ -17,6 +17,7 @@
 #include "../../2019/src/common/str.h"
 #include "../../2019/src/common/vector.h"
 #include "../../2019/src/common/set.h"
+#include "../../2019/src/common/heap.h"
 #include "../../2019/src/common/vec2.h"
 
 #define SFMT_INT32_T "%" SCNd32
