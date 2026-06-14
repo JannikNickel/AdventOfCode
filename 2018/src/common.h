@@ -35,4 +35,14 @@ inline int32_t max(int32_t a, int32_t b)
 	return a > b ? a : b;
 }
 
+inline int64_t min_i64(int64_t a, int64_t b)
+{
+	return a < b ? a : b;
+}
+
+inline int64_t max_i64(int64_t a, int64_t b)
+{
+	return a > b ? a : b;
+}
+
 #endif
