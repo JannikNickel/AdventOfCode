@@ -11,11 +11,12 @@ Solutions for [Advent of Code](https://adventofcode.com/).
 | [2021](/2021) | 50 / 50 ⭐  | Rust     |
 | [2020](/2020) | 50 / 50 ⭐  | C++      |
 | [2019](/2019) | 50 / 50 ⭐  | C        |
+| [2018](/2018) | 50 / 50 ⭐  | C        |
 
 ## Input downloading
 To download the puzzle inputs of an individual user, the `input_dl.py` script can be used. It is configured to work for all solutions and years in this repository.
 ```bash
-python input_dl.py --year {2019..2025} [--day {1..25}] [--update] [--session SESSION]
+python input_dl.py --year {2018..2025} [--day {1..25}] [--update] [--session SESSION]
 
 --year <YEAR>       # The year of the input to download.
 --day <DAY>         # The day of the input to download. Leave empty to download the whole year
